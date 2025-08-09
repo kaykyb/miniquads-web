@@ -6,6 +6,8 @@ body {
   font-family: "Londrina Solid", cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #60a5fa; /* matches bg-blue-400 */
+  min-height: 100dvh;
 }
 
 @theme {

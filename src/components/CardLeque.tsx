@@ -12,8 +12,8 @@ interface Props {
 
 export default function CardLeque({ cards, onDropCard }: Props) {
   return (
-    <div className="fixed -bottom-32 left-0 right-0 w-full">
-      <div className="relative mx-auto h-64 w-full max-w-4xl">
+    <div className="absolute left-0 right-0 w-full" style={{ bottom: -32 }}>
+      <div className="relative mx-auto h-64 w-full" style={{ maxWidth: 760 }}>
         {cards.map((card, i) => {
           const total = cards.length;
 

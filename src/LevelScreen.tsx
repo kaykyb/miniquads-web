@@ -1,4 +1,4 @@
-import { useMemo, useReducer } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import type { Level } from "./models/level";
 import {
   buildInitialState,
@@ -16,6 +16,32 @@ function LevelScreen({ level }: Props) {
   const initialState = useMemo(() => buildInitialState(level), [level]);
   const [state, dispatch] = useReducer(levelStateReducer, initialState);
   const cards = first4UnusedCards(state);
+
+  // Responsive scale based on viewport
+  const DESIGN_WIDTH = 760; // px, matches .grass-block width
+  const DESIGN_HEIGHT = 900; // px, board (670) + card fan area (~230)
+  const PADDING_X = 32; // min side padding in px
+  const PADDING_Y = 96; // min top/bottom padding in px
+
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const computeScale = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const availableWidth = Math.max(vw - PADDING_X * 2, 0);
+      const availableHeight = Math.max(vh - PADDING_Y * 2, 0);
+      const next = Math.min(
+        availableWidth / DESIGN_WIDTH,
+        availableHeight / DESIGN_HEIGHT,
+        1
+      );
+      setScale(next);
+    };
+    computeScale();
+    window.addEventListener("resize", computeScale, { passive: true });
+    return () => window.removeEventListener("resize", computeScale);
+  }, []);
 
   const assignCell = (id: number, value: number) => {
     dispatch({
@@ -40,10 +66,20 @@ function LevelScreen({ level }: Props) {
   };
 
   return (
-    <div className="h-full w-full flex items-center justify-center bg-blue-400">
-      <div className="grass-block transform relative scale-75">
-        <div className="tilted-board -top-10 -left-4 bottom-36 right-18 absolute">
-          <BoardGrid level={level} levelState={state} />
+    <div className="h-full w-full flex items-center justify-center bg-blue-400 px-8 py-24 box-border">
+      <div
+        className="relative"
+        style={{
+          width: DESIGN_WIDTH,
+          height: DESIGN_HEIGHT,
+          transform: `scale(${scale})`,
+          transformOrigin: "center center",
+        }}
+      >
+        <div className="grass-block relative">
+          <div className="tilted-board -top-10 -left-4 bottom-36 right-18 absolute">
+            <BoardGrid level={level} levelState={state} />
+          </div>
         </div>
         <CardLeque cards={cards} onDropCard={onDropCard} />
       </div>
