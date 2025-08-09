@@ -24,12 +24,29 @@ export default function DraggableCard({ card, onDropCard }: Props) {
   const [dragSize, setDragSize] = useState<{ w: number; h: number } | null>(
     null
   );
+  const hoveredCellRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!dragging) return;
 
     const handlePointerMove = (e: PointerEvent) => {
       setPointerPos({ x: e.clientX, y: e.clientY });
+
+      // Update hovered cell visual state
+      const elem = document.elementFromPoint(
+        e.clientX,
+        e.clientY
+      ) as HTMLElement | null;
+      const target = elem?.closest<HTMLElement>("[data-drop-cell-id]") ?? null;
+      if (target !== hoveredCellRef.current) {
+        if (hoveredCellRef.current) {
+          hoveredCellRef.current.classList.remove("drop-target-hover");
+        }
+        if (target) {
+          target.classList.add("drop-target-hover");
+        }
+        hoveredCellRef.current = target;
+      }
     };
 
     const handlePointerUp = (e: PointerEvent) => {
@@ -53,6 +70,11 @@ export default function DraggableCard({ card, onDropCard }: Props) {
 
       setPointerOffset(null);
       setDragSize(null);
+      // Clear hovered visual state
+      if (hoveredCellRef.current) {
+        hoveredCellRef.current.classList.remove("drop-target-hover");
+        hoveredCellRef.current = null;
+      }
       onDropCard({ cardId: card.id, value: card.value, dropCellId });
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);

@@ -39,3 +39,9 @@ body {
   grid-template-columns: 80px 1fr;
   grid-template-rows: 80px 1fr;
 }
+
+/* Scales a board cell when a draggable card hovers over it */
+.drop-target-hover {
+  transform: scale(1.06);
+  outline: 4px solid #ff0000;
+}
