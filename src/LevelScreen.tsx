@@ -1,7 +1,12 @@
 import { useMemo, useReducer } from "react";
 import type { Level } from "./models/level";
-import { buildInitialState, levelStateReducer } from "./logic/levelState";
+import {
+  buildInitialState,
+  first4UnusedCards,
+  levelStateReducer,
+} from "./logic/levelState";
 import BoardGrid from "./components/BoardGrid";
+import CardLeque from "./components/CardLeque";
 
 interface Props {
   level: Level;
@@ -10,6 +15,7 @@ interface Props {
 function LevelScreen({ level }: Props) {
   const initialState = useMemo(() => buildInitialState(level), [level]);
   const [state, dispatch] = useReducer(levelStateReducer, initialState);
+  const cards = first4UnusedCards(state);
 
   const assignCell = (id: number, value: number) => {
     dispatch({
@@ -25,6 +31,7 @@ function LevelScreen({ level }: Props) {
         <div className="tilted-board -top-10 -left-4 bottom-36 right-18 absolute">
           <BoardGrid level={level} levelState={state} />
         </div>
+        <CardLeque cards={cards} />
       </div>
     </div>
   );

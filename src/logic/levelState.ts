@@ -1,5 +1,5 @@
 import type { Level } from "../models/level";
-import type { LevelState } from "../models/levelState";
+import type { Card, LevelState } from "../models/levelState";
 
 type Action = {
   type: "assignCell";
@@ -32,9 +32,13 @@ export const buildInitialState = (level: Level): LevelState => {
     if (level.given.includes(i)) cellValues.push(level.solutions[i]);
     else cellValues.push(0);
   }
-  console.log(cellValues);
 
-  return { cellValues };
+  const cards = [];
+  for (let i = 0; i < level.cards.length; i++) {
+    cards.push({ used: false, value: level.cards[i] });
+  }
+
+  return { cellValues, cards };
 };
 
 export const levelSubset = (
@@ -56,5 +60,10 @@ export const levelStateSubset = (
 ): LevelState => {
   return {
     cellValues: levelState.cellValues.slice(0, end),
+    cards: levelState.cards,
   };
+};
+
+export const first4UnusedCards = (levelState: LevelState): Card[] => {
+  return levelState.cards.filter((card) => !card.used).slice(0, 4);
 };

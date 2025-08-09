@@ -9,8 +9,6 @@ interface Props {
 }
 
 export default function BoardGrid({ level, levelState }: Props) {
-  console.log(levelState);
-
   const lengthsLength = level.sides.length;
   const solutionsLength = level.solutions.length;
 
