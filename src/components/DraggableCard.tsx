@@ -112,7 +112,7 @@ export default function DraggableCard({ card, onDropCard }: Props) {
         ref={rootRef}
         onPointerDown={onPointerDown}
         className={
-          "bg-blue-500 h-40 w-32 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none touch-none text-white transition-opacity " +
+          "bg-blue-500 h-40 w-32 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none touch-none text-white transition-opacity shadow-2xl " +
           (card.used ? "opacity-50" : "cursor-grab active:cursor-grabbing")
         }
         style={dragging ? { visibility: "hidden" } : undefined}
@@ -124,7 +124,7 @@ export default function DraggableCard({ card, onDropCard }: Props) {
         pointerPos &&
         createPortal(
           <div
-            className="bg-blue-500 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none text-white opacity-50 transition-opacity "
+            className="bg-blue-500 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none text-white opacity-50 transition-opacity shadow-2xl"
             style={{
               position: "fixed",
               left: `${pointerPos.x - (pointerOffset?.x ?? 0)}px`,
