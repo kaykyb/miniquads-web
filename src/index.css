@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Londrina+Solid:wght@100;300;400;900&display=swap");
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  font-family: "Londrina Solid", cursive;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@theme {
+  --default-font-family: "Londrina Solid", cursive;
+}
+
+.grass-block {
+  background-image: url("./assets/grass.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  height: 670px;
+  width: 760px;
+}
+
+.tilted-board {
+  transform: perspective(45cm) rotateX(14deg);
+}
+
+.board-grid {
+  grid-template-areas:
+    "a a b"
+    "a a c"
+    "d e f";
+}
+
+.board-grid-small {
+  grid-template-areas:
+    "a b"
+    "d c";
+  grid-template-columns: 80px 1fr;
+  grid-template-rows: 80px 1fr;
+}
