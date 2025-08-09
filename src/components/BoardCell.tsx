@@ -5,12 +5,18 @@ interface Props {
 }
 
 export default function BoardCell({ id, value }: Props) {
+  const solved = value !== 0;
+
+  // if the cell is not solved, it should be traced with a dashed border
+  const borderStyle = solved ? "border-b-4 border-gray-200 bg-white " : "border-4 border-gray-200 border-dashed bg-transparent";
+  const textStyle = solved ? "text-black" : "text-white";
+
   return (
     <div
-      className="bg-white rounded-3xl text-black flex items-center justify-center text-4xl border-b-4 border-gray-200 transition-transform duration-150 ease-out"
+      className={`rounded-3xl flex items-center justify-center text-4xl ${borderStyle} transition-transform duration-150 ease-out ${textStyle}`}
       data-drop-cell-id={id}
     >
-      {value === 0 ? "?" : value}
+      {solved ? value : "?"}
     </div>
   );
 }
