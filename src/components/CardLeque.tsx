@@ -3,7 +3,11 @@ import DraggableCard from "./DraggableCard";
 
 interface Props {
   cards: Card[];
-  onDropCard: (params: { cardId: number; value: number; dropCellId: number | null }) => void;
+  onDropCard: (params: {
+    cardId: number;
+    value: number;
+    dropCellId: number | null;
+  }) => void;
 }
 
 export default function CardLeque({ cards, onDropCard }: Props) {
@@ -34,14 +38,18 @@ export default function CardLeque({ cards, onDropCard }: Props) {
           };
 
           const layout = presets[total as 1 | 2 | 3 | 4];
-          const pos: Pos = layout?.[i] ?? { top: 24, dx: (i - (total - 1) / 2) * 80, rotate: 0 };
+          const pos: Pos = layout?.[i] ?? {
+            top: 24,
+            dx: (i - (total - 1) / 2) * 80,
+            rotate: 0,
+          };
 
           const zIndex = 1000 - i;
 
           return (
             <div
-              key={i}
-              className="absolute"
+              key={card.id}
+              className="absolute transition-all duration-300"
               style={{
                 left: "50%",
                 top: `${pos.top}px`,
