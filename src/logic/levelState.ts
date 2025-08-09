@@ -1,11 +1,16 @@
 import type { Level } from "../models/level";
 import type { Card, LevelState } from "../models/levelState";
 
-type Action = {
-  type: "assignCell";
-  id: number;
-  value: number;
-};
+type Action =
+  | {
+      type: "assignCell";
+      id: number;
+      value: number;
+    }
+  | {
+      type: "useCard";
+      cardId: number;
+    };
 
 export const levelStateReducer = (
   state: LevelState,
@@ -17,6 +22,12 @@ export const levelStateReducer = (
       newAssignedCells[action.id] = action.value;
 
       return { ...state, cellValues: newAssignedCells };
+    }
+    case "useCard": {
+      const newCards: Card[] = state.cards.map((c) =>
+        c.id === action.cardId ? { ...c, used: true } : c
+      );
+      return { ...state, cards: newCards };
     }
 
     default:
@@ -35,7 +46,7 @@ export const buildInitialState = (level: Level): LevelState => {
 
   const cards = [];
   for (let i = 0; i < level.cards.length; i++) {
-    cards.push({ used: false, value: level.cards[i] });
+    cards.push({ id: i, used: false, value: level.cards[i] });
   }
 
   return { cellValues, cards };

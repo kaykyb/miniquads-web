@@ -1,4 +1,5 @@
 export type Card = {
+  id: number;
   used: boolean;
   value: number;
 };

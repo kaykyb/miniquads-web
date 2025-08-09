@@ -4,9 +4,12 @@ interface Props {
   solution: number;
 }
 
-export default function BoardCell({ value }: Props) {
+export default function BoardCell({ id, value }: Props) {
   return (
-    <div className="bg-white rounded-3xl text-black flex items-center justify-center text-4xl border-b-4 border-gray-200">
+    <div
+      className="bg-white rounded-3xl text-black flex items-center justify-center text-4xl border-b-4 border-gray-200"
+      data-drop-cell-id={id}
+    >
       {value === 0 ? "?" : value}
     </div>
   );

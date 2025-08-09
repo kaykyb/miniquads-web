@@ -3,9 +3,10 @@ import DraggableCard from "./DraggableCard";
 
 interface Props {
   cards: Card[];
+  onDropCard: (params: { cardId: number; value: number; dropCellId: number | null }) => void;
 }
 
-export default function CardLeque({ cards }: Props) {
+export default function CardLeque({ cards, onDropCard }: Props) {
   return (
     <div className="fixed -bottom-32 left-0 right-0 w-full">
       <div className="relative mx-auto h-64 w-full max-w-4xl">
@@ -48,7 +49,7 @@ export default function CardLeque({ cards }: Props) {
                 zIndex,
               }}
             >
-              <DraggableCard card={card} />
+              <DraggableCard card={card} onDropCard={onDropCard} />
             </div>
           );
         })}
