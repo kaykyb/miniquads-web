@@ -2,9 +2,10 @@ import { useState } from "react";
 import MenuScreen from "./MenuScreen";
 import LevelScreen from "./LevelScreen";
 import LevelCompleteScreen from "./LevelCompleteScreen";
+import LevelEditor from "./LevelEditor";
 import { levels } from "./levels";
 
-type Screens = "menu" | "level" | "levelComplete";
+type Screens = "menu" | "level" | "levelComplete" | "levelEditor";
 
 function App() {
   const [screen, setScreen] = useState<Screens>("menu");
@@ -13,6 +14,14 @@ function App() {
   const startGame = () => {
     setLevelIndex(0);
     setScreen("level");
+  };
+
+  const openLevelEditor = () => {
+    setScreen("levelEditor");
+  };
+
+  const backToMenu = () => {
+    setScreen("menu");
   };
 
   const handleLevelComplete = () => {
@@ -30,7 +39,7 @@ function App() {
 
   return (
     <div className="fixed inset-0 bg-blue-400 scheme-dark text-white flex overflow-hidden">
-      {screen === "menu" && <MenuScreen onPlayClick={startGame} />}
+      {screen === "menu" && <MenuScreen onPlayClick={startGame} onLevelEditorClick={openLevelEditor} />}
 
       {screen === "level" && (
         <LevelScreen
@@ -45,6 +54,10 @@ function App() {
           isLastLevel={levelIndex + 1 >= levels.length}
           onContinue={handleContinueFromWin}
         />
+      )}
+
+      {screen === "levelEditor" && (
+        <LevelEditor onBack={backToMenu} />
       )}
     </div>
   );
