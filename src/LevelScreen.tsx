@@ -88,16 +88,11 @@ function LevelScreen({ level }: Props) {
 
   const onDropCard = (params: { cardId: number; value: number; dropCellId: number | null }) => {
     const { cardId, value, dropCellId } = params;
-    if (dropCellId == null) return; // not dropped on a cell
-    // Only allow placing on empty cells
+    if (dropCellId == null) return;
     if (state.cellValues[dropCellId] !== 0) return;
 
-    // Validate against solution
-    const expected = level.solutions[dropCellId];
-    if (value === expected) {
-      assignCell(dropCellId, value);
-      dispatch({ type: "useCard", cardId });
-    }
+    assignCell(dropCellId, value);
+    dispatch({ type: "useCard", cardId });
   };
 
   return (
