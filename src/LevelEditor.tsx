@@ -36,14 +36,32 @@ export default function LevelEditor({ onBack }: { onBack: () => void }) {
 
   // Update level and level state when sides or cards change
   useEffect(() => {
-    const newLevel: Level = {
-      sides: sides,
-      given: level.given.filter(index => index < totalCells), // Keep only valid given indices
-      solutions: Array.from({ length: totalCells }, (_, i) => level.solutions[i] || 0),
-      cards: cards,
-    };
-    setLevel(newLevel);
-    setLevelState(buildInitialState(newLevel));
+    // Recompute solutions array length when sides change, but keep existing values where possible
+    const updatedSolutions = Array.from({ length: totalCells }, (_, i) => level.solutions[i] || 0);
+    const updatedGiven = level.given.filter(index => index < totalCells);
+
+    // Update `level` first, preserving other fields
+    setLevel(prev => ({
+      ...prev,
+      sides,
+      cards,
+      given: updatedGiven,
+      solutions: updatedSolutions,
+    }));
+
+    // Update `levelState` while PRESERVING existing cellValues whenever possible
+    setLevelState(prev => {
+      // Preserve previous cell values; extend or trim to the new totalCells length
+      const newCellValues = Array.from({ length: totalCells }, (_, i) => prev.cellValues[i] || 0);
+
+      // Re-build cards list but keep the current `used` state when indices align
+      const newCards = cards.map((value, i) => {
+        const existing = prev.cards[i];
+        return existing ? { ...existing, value } : { id: i, value, used: false };
+      });
+
+      return { ...prev, cellValues: newCellValues, cards: newCards };
+    });
   }, [sides, cards, totalCells]);
 
   const handleCellClick = useCallback((cellIndex: number) => {
