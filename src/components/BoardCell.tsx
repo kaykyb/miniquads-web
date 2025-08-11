@@ -5,6 +5,7 @@ interface Props {
   id: number;
   value: number;
   solution: number;
+  hintTick?: number;
   onDragOutCard?: (params: {
     fromCellId: number;
     value: number;
@@ -13,8 +14,23 @@ interface Props {
   isGiven?: boolean;
 }
 
-export default function BoardCell({ id, value, onDragOutCard, isGiven = false }: Props) {
+export default function BoardCell({ id, value, solution, hintTick, onDragOutCard, isGiven = false }: Props) {
   const solved = value !== 0;
+
+  // Wrongly placed if filled but value differs from solution
+  const wrong = solved && value !== solution;
+
+  const [shake, setShake] = useState(false);
+
+  // Trigger shake whenever hintTick updates and this cell is wrong
+  useEffect(() => {
+    if (hintTick === undefined) return;
+    if (!wrong) return;
+
+    setShake(true);
+    const t = window.setTimeout(() => setShake(false), 600);
+    return () => window.clearTimeout(t);
+  }, [hintTick, wrong]);
 
   // if the cell is not solved, it should be traced with a dashed border
   const borderStyle = solved ? "border-b-4 border-gray-200 bg-white " : "border-4 border-gray-200 border-dashed bg-transparent";
@@ -145,7 +161,7 @@ export default function BoardCell({ id, value, onDragOutCard, isGiven = false }:
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUpCancel}
         onPointerLeave={onPointerUpCancel}
-        className={`rounded-3xl flex items-center justify-center text-4xl ${borderStyle} transition-transform duration-150 ease-out ${textStyle} ${
+        className={`rounded-3xl flex items-center justify-center text-4xl ${borderStyle} transition-transform duration-150 ease-out ${textStyle} ${shake ? "animate-shake" : ""} ${
           solved ? "cursor-grab active:cursor-grabbing" : ""
         }`}
         style={dragging ? { visibility: "hidden" } : undefined}

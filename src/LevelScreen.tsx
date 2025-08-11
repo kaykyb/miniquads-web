@@ -17,6 +17,24 @@ function LevelScreen({ level, onLevelComplete }: Props) {
   const initialState = useMemo(() => buildInitialState(level), [level]);
   const [state, dispatch] = useReducer(levelStateReducer, initialState);
   const cards = first4UnusedCards(state);
+  // Counts how many times a hint should trigger
+  const [hintTick, setHintTick] = useState(0);
+
+  useEffect(() => {
+    let intervalId: number | null = null;
+
+    if (cards.length < 3) {
+      intervalId = window.setInterval(() => {
+        setHintTick((t) => t + 1);
+      }, 5000);
+    }
+
+    return () => {
+      if (intervalId != null) {
+        window.clearInterval(intervalId);
+      }
+    };
+  }, [cards.length]);
 
   const [levelCompleted, setLevelCompleted] = useState(false);
 
@@ -152,7 +170,7 @@ function LevelScreen({ level, onLevelComplete }: Props) {
       >
         <div className="grass-block relative">
           <div className="tilted-board -top-10 -left-4 bottom-36 right-18 absolute">
-            <BoardGrid level={level} levelState={state} onCellDrag={onDragCellCard} />
+            <BoardGrid level={level} levelState={state} hintTick={hintTick} onCellDrag={onDragCellCard} />
           </div>
         </div>
         <CardLeque cards={cards} onDropCard={onDropCard} />
