@@ -27,18 +27,21 @@ export default function BoardGrid({ level, levelState, onCellDrag }: Props) {
           value={levelState.cellValues[solutionsLength - 3]}
           solution={level.solutions[solutionsLength - 3]}
           onDragOutCard={onCellDrag}
+          isGiven={level.given.includes(solutionsLength - 3)}
         />
         <BoardCell
           id={solutionsLength - 1}
           value={levelState.cellValues[solutionsLength - 1]}
           solution={level.solutions[solutionsLength - 1]}
           onDragOutCard={onCellDrag}
+          isGiven={level.given.includes(solutionsLength - 1)}
         />
         <BoardCell
           id={solutionsLength - 2}
           value={levelState.cellValues[solutionsLength - 2]}
           solution={level.solutions[solutionsLength - 2]}
           onDragOutCard={onCellDrag}
+          isGiven={level.given.includes(solutionsLength - 2)}
         />
       </div>
     );
@@ -64,30 +67,35 @@ export default function BoardGrid({ level, levelState, onCellDrag }: Props) {
         value={levelState.cellValues[solutionsLength - 5]}
         solution={level.solutions[solutionsLength - 5]}
         onDragOutCard={onCellDrag}
+        isGiven={level.given.includes(solutionsLength - 5)}
       />
       <BoardCell
         id={solutionsLength - 4}
         value={levelState.cellValues[solutionsLength - 4]}
         solution={level.solutions[solutionsLength - 4]}
         onDragOutCard={onCellDrag}
+        isGiven={level.given.includes(solutionsLength - 4)}
       />
       <BoardCell
         id={solutionsLength - 1}
         value={levelState.cellValues[solutionsLength - 1]}
         solution={level.solutions[solutionsLength - 1]}
         onDragOutCard={onCellDrag}
+        isGiven={level.given.includes(solutionsLength - 1)}
       />
       <BoardCell
         id={solutionsLength - 2}
         value={levelState.cellValues[solutionsLength - 2]}
         solution={level.solutions[solutionsLength - 2]}
         onDragOutCard={onCellDrag}
+        isGiven={level.given.includes(solutionsLength - 2)}
       />
       <BoardCell
         id={solutionsLength - 3}
         value={levelState.cellValues[solutionsLength - 3]}
         solution={level.solutions[solutionsLength - 3]}
         onDragOutCard={onCellDrag}
+        isGiven={level.given.includes(solutionsLength - 3)}
       />
     </div>
   );

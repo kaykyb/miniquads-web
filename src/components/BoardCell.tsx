@@ -10,9 +10,10 @@ interface Props {
     value: number;
     dropCellId: number | null;
   }) => void;
+  isGiven?: boolean;
 }
 
-export default function BoardCell({ id, value, onDragOutCard }: Props) {
+export default function BoardCell({ id, value, onDragOutCard, isGiven = false }: Props) {
   const solved = value !== 0;
 
   // if the cell is not solved, it should be traced with a dashed border
@@ -122,7 +123,7 @@ export default function BoardCell({ id, value, onDragOutCard }: Props) {
   };
 
   const onPointerDown: React.PointerEventHandler<HTMLDivElement> = (e) => {
-    if (!solved) return;
+    if (!solved || isGiven) return;
     // Initiate hold timer (200ms)
     holdTimeout.current = window.setTimeout(() => {
       startDrag(e);
