@@ -9,7 +9,7 @@ function App() {
   const [screen, setScreen] = useState<Screens>("menu");
 
   return (
-    <div className="absolute top-0 left-0 h-screen w-screen bg-blue-400 scheme-dark text-white flex">
+    <div className="fixed inset-0 bg-blue-400 scheme-dark text-white flex overflow-hidden">
       {screen === "menu" && (
         <MenuScreen onPlayClick={() => setScreen("level")} />
       )}

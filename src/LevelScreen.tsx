@@ -27,8 +27,9 @@ function LevelScreen({ level }: Props) {
 
   useEffect(() => {
     const computeScale = () => {
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
+      const vv = window.visualViewport;
+      const vw = vv?.width ?? window.innerWidth;
+      const vh = vv?.height ?? window.innerHeight;
       const availableWidth = Math.max(vw - PADDING_X * 2, 0);
       const availableHeight = Math.max(vh - PADDING_Y * 2, 0);
       const next = Math.min(
@@ -38,9 +39,43 @@ function LevelScreen({ level }: Props) {
       );
       setScale(next);
     };
+
+    // Initial calculation (twice: once now, once next frame to catch dynamic toolbar changes)
     computeScale();
+    requestAnimationFrame(computeScale);
+
+    // Window resize
     window.addEventListener("resize", computeScale, { passive: true });
-    return () => window.removeEventListener("resize", computeScale);
+
+    // Orientation change (Safari/iOS and some Androids)
+    const orientation = window.screen.orientation;
+    const onOrientationChange = () => computeScale();
+    if (orientation && typeof orientation.addEventListener === "function") {
+      orientation.addEventListener("change", onOrientationChange);
+    } else {
+      window.addEventListener("orientationchange", onOrientationChange);
+    }
+
+    // Visual viewport changes (Chrome mobile dynamic address bar)
+    const vv = window.visualViewport;
+    const onVVChange = () => computeScale();
+    if (vv) {
+      vv.addEventListener("resize", onVVChange);
+      vv.addEventListener("scroll", onVVChange);
+    }
+
+    return () => {
+      window.removeEventListener("resize", computeScale);
+      if (orientation && typeof orientation.removeEventListener === "function") {
+        orientation.removeEventListener("change", onOrientationChange);
+      } else {
+        window.removeEventListener("orientationchange", onOrientationChange);
+      }
+      if (vv) {
+        vv.removeEventListener("resize", onVVChange);
+        vv.removeEventListener("scroll", onVVChange);
+      }
+    };
   }, []);
 
   const assignCell = (id: number, value: number) => {
