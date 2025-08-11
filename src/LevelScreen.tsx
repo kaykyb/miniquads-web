@@ -10,12 +10,28 @@ import CardLeque from "./components/CardLeque";
 
 interface Props {
   level: Level;
+  onLevelComplete?: () => void;
 }
 
-function LevelScreen({ level }: Props) {
+function LevelScreen({ level, onLevelComplete }: Props) {
   const initialState = useMemo(() => buildInitialState(level), [level]);
   const [state, dispatch] = useReducer(levelStateReducer, initialState);
   const cards = first4UnusedCards(state);
+
+  const [levelCompleted, setLevelCompleted] = useState(false);
+
+  useEffect(() => {
+    if (levelCompleted) return;
+
+    const solved = state.cellValues.every(
+      (value, idx) => value !== 0 && value === level.solutions[idx]
+    );
+
+    if (solved) {
+      setLevelCompleted(true);
+      onLevelComplete?.();
+    }
+  }, [state.cellValues, level.solutions, levelCompleted, onLevelComplete]);
 
   // Responsive scale based on viewport
   const DESIGN_WIDTH = 760; // px, matches .grass-block width
