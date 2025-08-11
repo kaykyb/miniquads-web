@@ -17,7 +17,7 @@ function LevelScreen({ level, onLevelComplete }: Props) {
   const initialState = useMemo(() => buildInitialState(level), [level]);
   const [state, dispatch] = useReducer(levelStateReducer, initialState);
   const cards = first4UnusedCards(state);
-  // Counts how many times a hint should trigger
+
   const [hintTick, setHintTick] = useState(0);
 
   useEffect(() => {
@@ -51,7 +51,6 @@ function LevelScreen({ level, onLevelComplete }: Props) {
     }
   }, [state.cellValues, level.solutions, levelCompleted, onLevelComplete]);
 
-  // Responsive scale based on viewport
   const DESIGN_WIDTH = 760; // px, matches .grass-block width
   const DESIGN_HEIGHT = 900; // px, board (670) + card fan area (~230)
   const PADDING_X = 32; // min side padding in px
@@ -78,10 +77,8 @@ function LevelScreen({ level, onLevelComplete }: Props) {
     computeScale();
     requestAnimationFrame(computeScale);
 
-    // Window resize
     window.addEventListener("resize", computeScale, { passive: true });
 
-    // Orientation change (Safari/iOS and some Androids)
     const orientation = window.screen.orientation;
     const onOrientationChange = () => computeScale();
     if (orientation && typeof orientation.addEventListener === "function") {
@@ -90,7 +87,6 @@ function LevelScreen({ level, onLevelComplete }: Props) {
       window.addEventListener("orientationchange", onOrientationChange);
     }
 
-    // Visual viewport changes (Chrome mobile dynamic address bar)
     const vv = window.visualViewport;
     const onVVChange = () => computeScale();
     if (vv) {
@@ -100,7 +96,10 @@ function LevelScreen({ level, onLevelComplete }: Props) {
 
     return () => {
       window.removeEventListener("resize", computeScale);
-      if (orientation && typeof orientation.removeEventListener === "function") {
+      if (
+        orientation &&
+        typeof orientation.removeEventListener === "function"
+      ) {
         orientation.removeEventListener("change", onOrientationChange);
       } else {
         window.removeEventListener("orientationchange", onOrientationChange);
@@ -120,7 +119,11 @@ function LevelScreen({ level, onLevelComplete }: Props) {
     });
   };
 
-  const onDropCard = (params: { cardId: number; value: number; dropCellId: number | null }) => {
+  const onDropCard = (params: {
+    cardId: number;
+    value: number;
+    dropCellId: number | null;
+  }) => {
     const { cardId, value, dropCellId } = params;
     if (dropCellId == null) return;
     if (state.cellValues[dropCellId] !== 0) return;
@@ -129,14 +132,16 @@ function LevelScreen({ level, onLevelComplete }: Props) {
     dispatch({ type: "useCard", cardId });
   };
 
-  const onDragCellCard = (params: { fromCellId: number; value: number; dropCellId: number | null }) => {
+  const onDragCellCard = (params: {
+    fromCellId: number;
+    value: number;
+    dropCellId: number | null;
+  }) => {
     const { fromCellId, value, dropCellId } = params;
 
-    // Clear original cell
     assignCell(fromCellId, 0);
 
     if (dropCellId == null) {
-      // Card was dragged back to inventory / outside board – mark it unused
       dispatch({ type: "returnCard", cardValue: value });
       return;
     }
@@ -170,7 +175,12 @@ function LevelScreen({ level, onLevelComplete }: Props) {
       >
         <div className="grass-block relative">
           <div className="tilted-board -top-10 -left-4 bottom-36 right-18 absolute">
-            <BoardGrid level={level} levelState={state} hintTick={hintTick} onCellDrag={onDragCellCard} />
+            <BoardGrid
+              level={level}
+              levelState={state}
+              hintTick={hintTick}
+              onCellDrag={onDragCellCard}
+            />
           </div>
         </div>
         <CardLeque cards={cards} onDropCard={onDropCard} />

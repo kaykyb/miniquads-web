@@ -14,10 +14,15 @@ interface Props {
   isGiven?: boolean;
 }
 
-export default function BoardCell({ id, value, solution, hintTick, onDragOutCard, isGiven = false }: Props) {
+export default function BoardCell({
+  id,
+  value,
+  solution,
+  hintTick,
+  onDragOutCard,
+  isGiven = false,
+}: Props) {
   const solved = value !== 0;
-
-  // Wrongly placed if filled but value differs from solution
   const wrong = solved && value !== solution;
 
   const [shake, setShake] = useState(false);
@@ -33,7 +38,9 @@ export default function BoardCell({ id, value, solution, hintTick, onDragOutCard
   }, [hintTick, wrong]);
 
   // if the cell is not solved, it should be traced with a dashed border
-  const borderStyle = solved ? "border-b-4 border-gray-200 bg-white " : "border-4 border-gray-200 border-dashed bg-transparent";
+  const borderStyle = solved
+    ? "border-b-4 border-gray-200 bg-white "
+    : "border-4 border-gray-200 border-dashed bg-transparent";
   const textStyle = solved ? "text-black" : "text-white";
 
   // Drag state (similar to DraggableCard)
@@ -68,9 +75,10 @@ export default function BoardCell({ id, value, solution, hintTick, onDragOutCard
       setPointerPos({ x: e.clientX, y: e.clientY });
 
       // Update hovered cell
-      const elem = document.elementFromPoint(e.clientX, e.clientY) as
-        | HTMLElement
-        | null;
+      const elem = document.elementFromPoint(
+        e.clientX,
+        e.clientY
+      ) as HTMLElement | null;
       const target = elem?.closest<HTMLElement>("[data-drop-cell-id]") ?? null;
       if (target !== hoveredCellRef.current) {
         if (hoveredCellRef.current) {
@@ -88,9 +96,10 @@ export default function BoardCell({ id, value, solution, hintTick, onDragOutCard
       setPointerPos(null);
 
       // Determine drop cell id
-      const elem = document.elementFromPoint(e.clientX, e.clientY) as
-        | HTMLElement
-        | null;
+      const elem = document.elementFromPoint(
+        e.clientX,
+        e.clientY
+      ) as HTMLElement | null;
       let dropCellId: number | null = null;
       if (elem) {
         const target = elem.closest<HTMLElement>("[data-drop-cell-id]");
@@ -160,15 +169,16 @@ export default function BoardCell({ id, value, solution, hintTick, onDragOutCard
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUpCancel}
         onPointerLeave={onPointerUpCancel}
-        className={`rounded-3xl flex items-center justify-center text-4xl ${borderStyle} transition-transform duration-150 ease-out ${textStyle} ${shake ? "animate-shake" : ""} ${
-          solved ? "cursor-grab active:cursor-grabbing" : ""
-        }`}
+        className={`rounded-3xl flex items-center justify-center text-4xl ${borderStyle} transition-transform duration-150 ease-out ${textStyle} ${
+          shake ? "animate-shake" : ""
+        } ${solved ? "cursor-grab active:cursor-grabbing" : ""}`}
         style={dragging ? { visibility: "hidden" } : undefined}
       >
         {solved ? value : "?"}
       </div>
 
-      {dragging && pointerPos && (
+      {dragging &&
+        pointerPos &&
         createPortal(
           <div
             className="bg-blue-500 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 text-white opacity-50 shadow-2xl"
@@ -185,8 +195,7 @@ export default function BoardCell({ id, value, solution, hintTick, onDragOutCard
             {value}
           </div>,
           document.body
-        )
-      )}
+        )}
     </>
   );
 }

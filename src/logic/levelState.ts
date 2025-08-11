@@ -27,17 +27,27 @@ export const levelStateReducer = (
 
       return { ...state, cellValues: newAssignedCells };
     }
+
     case "useCard": {
       const newCards: Card[] = state.cards.map((c) =>
         c.id === action.cardId ? { ...c, used: true } : c
       );
       return { ...state, cards: newCards };
     }
+
     case "returnCard": {
-      const newCards: Card[] = state.cards.map((c) =>
-        c.value === action.cardValue && c.used ? { ...c, used: false } : c
+      const card = state.cards.findIndex(
+        (c) => c.value === action.cardValue && c.used
       );
-      return { ...state, cards: newCards };
+
+      if (card > -1) {
+        const newCards: Card[] = { ...state.cards };
+        newCards[card].used = false;
+
+        return { ...state, cards: newCards };
+      }
+
+      return state;
     }
 
     default:
