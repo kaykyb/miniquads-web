@@ -140,10 +140,9 @@ export default function BoardCell({ id, value, solution, hintTick, onDragOutCard
 
   const onPointerDown: React.PointerEventHandler<HTMLDivElement> = (e) => {
     if (!solved || isGiven) return;
-    // Initiate hold timer (200ms)
     holdTimeout.current = window.setTimeout(() => {
       startDrag(e);
-    }, 200);
+    }, 50);
   };
 
   const onPointerUpCancel: React.PointerEventHandler<HTMLDivElement> = () => {
