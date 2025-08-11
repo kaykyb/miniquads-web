@@ -10,6 +10,10 @@ type Action =
   | {
       type: "useCard";
       cardId: number;
+    }
+  | {
+      type: "returnCard";
+      cardValue: number;
     };
 
 export const levelStateReducer = (
@@ -26,6 +30,12 @@ export const levelStateReducer = (
     case "useCard": {
       const newCards: Card[] = state.cards.map((c) =>
         c.id === action.cardId ? { ...c, used: true } : c
+      );
+      return { ...state, cards: newCards };
+    }
+    case "returnCard": {
+      const newCards: Card[] = state.cards.map((c) =>
+        c.value === action.cardValue && c.used ? { ...c, used: false } : c
       );
       return { ...state, cards: newCards };
     }

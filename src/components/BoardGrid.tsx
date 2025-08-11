@@ -6,9 +6,10 @@ import BoardCell from "./BoardCell";
 interface Props {
   level: Level;
   levelState: LevelState;
+  onCellDrag?: (params: { fromCellId: number; value: number; dropCellId: number | null }) => void;
 }
 
-export default function BoardGrid({ level, levelState }: Props) {
+export default function BoardGrid({ level, levelState, onCellDrag }: Props) {
   const lengthsLength = level.sides.length;
   const solutionsLength = level.solutions.length;
 
@@ -25,16 +26,19 @@ export default function BoardGrid({ level, levelState }: Props) {
           id={solutionsLength - 3}
           value={levelState.cellValues[solutionsLength - 3]}
           solution={level.solutions[solutionsLength - 3]}
+          onDragOutCard={onCellDrag}
         />
         <BoardCell
           id={solutionsLength - 1}
           value={levelState.cellValues[solutionsLength - 1]}
           solution={level.solutions[solutionsLength - 1]}
+          onDragOutCard={onCellDrag}
         />
         <BoardCell
           id={solutionsLength - 2}
           value={levelState.cellValues[solutionsLength - 2]}
           solution={level.solutions[solutionsLength - 2]}
+          onDragOutCard={onCellDrag}
         />
       </div>
     );
@@ -52,33 +56,38 @@ export default function BoardGrid({ level, levelState }: Props) {
       }}
     >
       <div className="col-span-2 row-span-2">
-        <BoardGrid level={subLevel} levelState={subLevelState}></BoardGrid>
+        <BoardGrid level={subLevel} levelState={subLevelState} onCellDrag={onCellDrag}></BoardGrid>
       </div>
 
       <BoardCell
         id={solutionsLength - 5}
         value={levelState.cellValues[solutionsLength - 5]}
         solution={level.solutions[solutionsLength - 5]}
+        onDragOutCard={onCellDrag}
       />
       <BoardCell
         id={solutionsLength - 4}
         value={levelState.cellValues[solutionsLength - 4]}
         solution={level.solutions[solutionsLength - 4]}
+        onDragOutCard={onCellDrag}
       />
       <BoardCell
         id={solutionsLength - 1}
         value={levelState.cellValues[solutionsLength - 1]}
         solution={level.solutions[solutionsLength - 1]}
+        onDragOutCard={onCellDrag}
       />
       <BoardCell
         id={solutionsLength - 2}
         value={levelState.cellValues[solutionsLength - 2]}
         solution={level.solutions[solutionsLength - 2]}
+        onDragOutCard={onCellDrag}
       />
       <BoardCell
         id={solutionsLength - 3}
         value={levelState.cellValues[solutionsLength - 3]}
         solution={level.solutions[solutionsLength - 3]}
+        onDragOutCard={onCellDrag}
       />
     </div>
   );

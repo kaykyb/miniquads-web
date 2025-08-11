@@ -95,6 +95,34 @@ function LevelScreen({ level }: Props) {
     dispatch({ type: "useCard", cardId });
   };
 
+  const onDragCellCard = (params: { fromCellId: number; value: number; dropCellId: number | null }) => {
+    const { fromCellId, value, dropCellId } = params;
+
+    // Clear original cell
+    assignCell(fromCellId, 0);
+
+    if (dropCellId == null) {
+      // Card was dragged back to inventory / outside board – mark it unused
+      dispatch({ type: "returnCard", cardValue: value });
+      return;
+    }
+
+    if (dropCellId === fromCellId) {
+      // Dropped back onto the same cell – restore value
+      assignCell(fromCellId, value);
+      return;
+    }
+
+    if (state.cellValues[dropCellId] !== 0) {
+      // Target already filled – ignore and restore original value
+      assignCell(fromCellId, value);
+      return;
+    }
+
+    // Move value to new cell
+    assignCell(dropCellId, value);
+  };
+
   return (
     <div className="h-full w-full flex items-center justify-center bg-blue-400 px-8 py-24 box-border">
       <div
@@ -108,7 +136,7 @@ function LevelScreen({ level }: Props) {
       >
         <div className="grass-block relative">
           <div className="tilted-board -top-10 -left-4 bottom-36 right-18 absolute">
-            <BoardGrid level={level} levelState={state} />
+            <BoardGrid level={level} levelState={state} onCellDrag={onDragCellCard} />
           </div>
         </div>
         <CardLeque cards={cards} onDropCard={onDropCard} />
