@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import type { Level } from "./models/level";
 import {
   buildInitialState,
@@ -8,6 +8,7 @@ import {
 } from "./logic/levelState";
 import BoardGrid from "./components/BoardGrid";
 import CardLeque from "./components/CardLeque";
+import { DESIGN_HEIGHT, DESIGN_WIDTH, useScale } from "./logic/interface";
 
 interface Props {
   level: Level;
@@ -15,10 +16,11 @@ interface Props {
 }
 
 function LevelScreen({ level, onLevelComplete }: Props) {
-  const initialState = useMemo(() => buildInitialState(level), [level]);
-  const [state, dispatch] = useReducer(levelStateReducer, initialState);
+  const [state, dispatch] = useReducer(
+    levelStateReducer,
+    buildInitialState(level)
+  );
   const cards = getFirst4AvailableCards(level, state);
-
   const [hintTick, setHintTick] = useState(0);
 
   useEffect(() => {
@@ -63,65 +65,7 @@ function LevelScreen({ level, onLevelComplete }: Props) {
     level,
   ]);
 
-  const DESIGN_WIDTH = 760;
-  const DESIGN_HEIGHT = 900;
-  const PADDING_X = 32;
-  const PADDING_Y = 96;
-
-  const [scale, setScale] = useState(1);
-
-  useEffect(() => {
-    const computeScale = () => {
-      const vv = window.visualViewport;
-      const vw = vv?.width ?? window.innerWidth;
-      const vh = vv?.height ?? window.innerHeight;
-      const availableWidth = Math.max(vw - PADDING_X * 2, 0);
-      const availableHeight = Math.max(vh - PADDING_Y * 2, 0);
-      const next = Math.min(
-        availableWidth / DESIGN_WIDTH,
-        availableHeight / DESIGN_HEIGHT,
-        1
-      );
-      setScale(next);
-    };
-
-    // Initial calculation (twice: once now, once next frame to catch dynamic toolbar changes)
-    computeScale();
-    requestAnimationFrame(computeScale);
-
-    window.addEventListener("resize", computeScale, { passive: true });
-
-    const orientation = window.screen.orientation;
-    const onOrientationChange = () => computeScale();
-    if (orientation && typeof orientation.addEventListener === "function") {
-      orientation.addEventListener("change", onOrientationChange);
-    } else {
-      window.addEventListener("orientationchange", onOrientationChange);
-    }
-
-    const vv = window.visualViewport;
-    const onVVChange = () => computeScale();
-    if (vv) {
-      vv.addEventListener("resize", onVVChange);
-      vv.addEventListener("scroll", onVVChange);
-    }
-
-    return () => {
-      window.removeEventListener("resize", computeScale);
-      if (
-        orientation &&
-        typeof orientation.removeEventListener === "function"
-      ) {
-        orientation.removeEventListener("change", onOrientationChange);
-      } else {
-        window.removeEventListener("orientationchange", onOrientationChange);
-      }
-      if (vv) {
-        vv.removeEventListener("resize", onVVChange);
-        vv.removeEventListener("scroll", onVVChange);
-      }
-    };
-  }, []);
+  const scale = useScale();
 
   const assignCell = (cellId: number, cardId: number) => {
     dispatch({
