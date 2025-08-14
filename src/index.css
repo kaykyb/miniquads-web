@@ -6,17 +6,21 @@ body {
   font-family: "Londrina Solid", cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #60a5fa; /* matches bg-blue-400 */
+  background-color: #51a2ff; /* matches bg-blue-400 */
   min-height: 100dvh;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   overflow: hidden; /* prevent mobile overscroll causing layout shift/overflow */
 }
 
 /* Disable text selection globally */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
@@ -63,17 +67,39 @@ html, body, #root {
 
 /* Shake animation for wrong placed cells */
 @keyframes shake {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  10% { transform: translate(-3px, 0) rotate(-1deg); }
-  20% { transform: translate(3px, 0) rotate(1deg); }
-  30% { transform: translate(-3px, 0) rotate(-1deg); }
-  40% { transform: translate(3px, 0) rotate(1deg); }
-  50% { transform: translate(-3px, 0) rotate(-1deg); }
-  60% { transform: translate(3px, 0) rotate(1deg); }
-  70% { transform: translate(-3px, 0) rotate(-1deg); }
-  80% { transform: translate(3px, 0) rotate(1deg); }
-  90% { transform: translate(-3px, 0) rotate(-1deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  10% {
+    transform: translate(-3px, 0) rotate(-1deg);
+  }
+  20% {
+    transform: translate(3px, 0) rotate(1deg);
+  }
+  30% {
+    transform: translate(-3px, 0) rotate(-1deg);
+  }
+  40% {
+    transform: translate(3px, 0) rotate(1deg);
+  }
+  50% {
+    transform: translate(-3px, 0) rotate(-1deg);
+  }
+  60% {
+    transform: translate(3px, 0) rotate(1deg);
+  }
+  70% {
+    transform: translate(-3px, 0) rotate(-1deg);
+  }
+  80% {
+    transform: translate(3px, 0) rotate(1deg);
+  }
+  90% {
+    transform: translate(-3px, 0) rotate(-1deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
 }
 
 .animate-shake {
