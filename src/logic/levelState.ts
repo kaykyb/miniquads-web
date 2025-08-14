@@ -1,20 +1,11 @@
 import type { Level } from "../models/level";
-import type { Card, LevelState } from "../models/levelState";
+import type { LevelState } from "../models/levelState";
 
-type Action =
-  | {
-      type: "assignCell";
-      id: number;
-      value: number;
-    }
-  | {
-      type: "useCard";
-      cardId: number;
-    }
-  | {
-      type: "returnCard";
-      cardValue: number;
-    };
+type Action = {
+  type: "assignCell";
+  cellId: number;
+  cardId: number; // -1 to clear the cell
+};
 
 export const levelStateReducer = (
   state: LevelState,
@@ -22,32 +13,9 @@ export const levelStateReducer = (
 ): LevelState => {
   switch (action.type) {
     case "assignCell": {
-      const newAssignedCells = [...state.cellValues];
-      newAssignedCells[action.id] = action.value;
-
-      return { ...state, cellValues: newAssignedCells };
-    }
-
-    case "useCard": {
-      const newCards: Card[] = state.cards.map((c) =>
-        c.id === action.cardId ? { ...c, used: true } : c
-      );
-      return { ...state, cards: newCards };
-    }
-
-    case "returnCard": {
-      const card = state.cards.findIndex(
-        (c) => c.value === action.cardValue && c.used
-      );
-
-      if (card > -1) {
-        const newCards: Card[] = { ...state.cards };
-        newCards[card].used = false;
-
-        return { ...state, cards: newCards };
-      }
-
-      return state;
+      const newCellAssignments = [...state.cellAssignments];
+      newCellAssignments[action.cellId] = action.cardId;
+      return { ...state, cellAssignments: newCellAssignments };
     }
 
     default:
@@ -58,18 +26,13 @@ export const levelStateReducer = (
 export const buildInitialState = (level: Level): LevelState => {
   const size = level.solutions.length;
 
-  const cellValues = [];
-  for (let i = 0; i < size; i++) {
-    if (level.given.includes(i)) cellValues.push(level.solutions[i]);
-    else cellValues.push(0);
-  }
+  const cellAssignments = new Array(size).fill(-1);
 
-  const cards = [];
-  for (let i = 0; i < level.cards.length; i++) {
-    cards.push({ id: i, used: false, value: level.cards[i] });
-  }
+  level.given.forEach((givenCellIndex, index) => {
+    cellAssignments[givenCellIndex] = index;
+  });
 
-  return { cellValues, cards };
+  return { cellAssignments };
 };
 
 export const levelSubset = (
@@ -90,11 +53,43 @@ export const levelStateSubset = (
   end: number
 ): LevelState => {
   return {
-    cellValues: levelState.cellValues.slice(0, end),
-    cards: levelState.cards,
+    cellAssignments: levelState.cellAssignments.slice(0, end),
   };
 };
 
-export const first4UnusedCards = (levelState: LevelState): Card[] => {
-  return levelState.cards.filter((card) => !card.used).slice(0, 4);
+export const getEffectiveCards = (level: Level): number[] => {
+  const givenCardValues = level.given.map(
+    (cellIndex) => level.solutions[cellIndex]
+  );
+  return [...givenCardValues, ...level.cards];
+};
+
+export const getAvailableCards = (level: Level, levelState: LevelState) => {
+  const usedCardIds = new Set(
+    levelState.cellAssignments.filter((cardId) => cardId !== -1)
+  );
+  const effectiveCards = getEffectiveCards(level);
+
+  return effectiveCards
+    .map((value, index) => ({ id: index, value }))
+    .filter((card) => !usedCardIds.has(card.id));
+};
+
+export const getFirst4AvailableCards = (
+  level: Level,
+  levelState: LevelState
+) => {
+  return getAvailableCards(level, levelState).slice(0, 4);
+};
+
+export const getCellValue = (
+  level: Level,
+  levelState: LevelState,
+  cellIndex: number
+): number => {
+  const cardId = levelState.cellAssignments[cellIndex];
+  if (cardId === -1) return 0;
+
+  const effectiveCards = getEffectiveCards(level);
+  return effectiveCards[cardId];
 };

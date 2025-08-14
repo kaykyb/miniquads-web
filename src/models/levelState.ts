@@ -1,10 +1,3 @@
-export type Card = {
-  id: number;
-  used: boolean;
-  value: number;
-};
-
 export type LevelState = {
-  cellValues: number[];
-  cards: Card[];
+  cellAssignments: number[]; // Array of card IDs assigned to each cell, -1 means no card assigned
 };

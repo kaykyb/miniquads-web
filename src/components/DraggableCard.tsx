@@ -1,9 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import type { Card } from "../models/levelState";
 
 type Props = {
-  card: Card;
+  card: { id: number; value: number };
   onDropCard: (params: {
     cardId: number;
     value: number;
@@ -21,9 +20,7 @@ export default function DraggableCard({ card, onDropCard }: Props) {
     x: number;
     y: number;
   } | null>(null);
-  const [dragSize, setDragSize] = useState<{ w: number; h: number } | null>(
-    null
-  );
+
   const hoveredCellRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -32,7 +29,6 @@ export default function DraggableCard({ card, onDropCard }: Props) {
     const handlePointerMove = (e: PointerEvent) => {
       setPointerPos({ x: e.clientX, y: e.clientY });
 
-      // Update hovered cell visual state
       const elem = document.elementFromPoint(
         e.clientX,
         e.clientY
@@ -69,7 +65,6 @@ export default function DraggableCard({ card, onDropCard }: Props) {
       }
 
       setPointerOffset(null);
-      setDragSize(null);
       // Clear hovered visual state
       if (hoveredCellRef.current) {
         hoveredCellRef.current.classList.remove("drop-target-hover");
@@ -92,12 +87,10 @@ export default function DraggableCard({ card, onDropCard }: Props) {
   }, [dragging, onDropCard, card.id, card.value]);
 
   const onPointerDown: React.PointerEventHandler<HTMLDivElement> = (e) => {
-    if (card.used) return;
     e.preventDefault();
     const box = rootRef.current?.getBoundingClientRect();
     if (box) {
       setPointerOffset({ x: e.clientX - box.left, y: e.clientY - box.top });
-      setDragSize({ w: box.width, h: box.height });
     } else {
       setPointerOffset({ x: 0, y: 0 });
     }
@@ -111,10 +104,7 @@ export default function DraggableCard({ card, onDropCard }: Props) {
       <div
         ref={rootRef}
         onPointerDown={onPointerDown}
-        className={
-          "bg-blue-500 h-40 w-32 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none touch-none text-white transition-opacity shadow-2xl " +
-          (card.used ? "opacity-50" : "cursor-grab active:cursor-grabbing")
-        }
+        className="bg-blue-500 h-40 w-32 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none touch-none text-white transition-opacity shadow-2xl cursor-grab active:cursor-grabbing"
         style={dragging ? { visibility: "hidden" } : undefined}
       >
         {card.value}
@@ -124,13 +114,12 @@ export default function DraggableCard({ card, onDropCard }: Props) {
         pointerPos &&
         createPortal(
           <div
-            className="bg-blue-500 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none text-white opacity-50 transition-opacity shadow-2xl"
+            className="bg-blue-500 h-40 w-32 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none text-white opacity-50 transition-opacity shadow-2xl"
             style={{
               position: "fixed",
               left: `${pointerPos.x - (pointerOffset?.x ?? 0)}px`,
               top: `${pointerPos.y - (pointerOffset?.y ?? 0)}px`,
-              width: dragSize?.w,
-              height: dragSize?.h,
+
               zIndex: 99999,
               pointerEvents: "none",
             }}

@@ -9,12 +9,20 @@ interface EditorBoardCellProps {
   onCellClick: (cellIndex: number) => void;
 }
 
-function EditorBoardCell({ id, value, isGiven, onCellClick }: EditorBoardCellProps) {
+function EditorBoardCell({
+  id,
+  value,
+  isGiven,
+  onCellClick,
+}: EditorBoardCellProps) {
   const handleClick = () => {
     onCellClick(id);
   };
 
-  const borderStyle = value !== 0 ? "border-b-4 border-gray-200 bg-white" : "border-4 border-gray-200 border-dashed bg-transparent";
+  const borderStyle =
+    value !== 0
+      ? "border-b-4 border-gray-200 bg-white"
+      : "border-4 border-gray-200 border-dashed bg-transparent";
   const textStyle = value !== 0 ? "text-black" : "text-gray-400";
   const givenStyle = isGiven ? "bg-yellow-200 border-yellow-400" : "";
 
@@ -42,7 +50,13 @@ interface Props {
   onCellClick: (cellIndex: number) => void;
 }
 
-export default function EditorBoardGrid({ level, levelState, editMode, selectedValue, onCellClick }: Props) {
+export default function EditorBoardGrid({
+  level,
+  levelState,
+  editMode,
+  selectedValue,
+  onCellClick,
+}: Props) {
   const lengthsLength = level.sides.length;
   const solutionsLength = level.solutions.length;
 
@@ -53,23 +67,26 @@ export default function EditorBoardGrid({ level, levelState, editMode, selectedV
 
   if (!hasSubLevel) {
     return (
-      <div className="grid board-grid-small w-full gap-3" style={{ minHeight: "160px", aspectRatio: "1 / 1" }}>
+      <div
+        className="grid board-grid-small w-full gap-3"
+        style={{ minHeight: "160px", aspectRatio: "1 / 1" }}
+      >
         <div></div>
         <EditorBoardCell
           id={solutionsLength - 3}
-          value={levelState.cellValues[solutionsLength - 3]}
+          value={level.solutions[solutionsLength - 3]}
           isGiven={level.given.includes(solutionsLength - 3)}
           onCellClick={onCellClick}
         />
         <EditorBoardCell
           id={solutionsLength - 1}
-          value={levelState.cellValues[solutionsLength - 1]}
+          value={level.solutions[solutionsLength - 1]}
           isGiven={level.given.includes(solutionsLength - 1)}
           onCellClick={onCellClick}
         />
         <EditorBoardCell
           id={solutionsLength - 2}
-          value={levelState.cellValues[solutionsLength - 2]}
+          value={level.solutions[solutionsLength - 2]}
           isGiven={level.given.includes(solutionsLength - 2)}
           onCellClick={onCellClick}
         />
@@ -87,13 +104,13 @@ export default function EditorBoardGrid({ level, levelState, editMode, selectedV
         gridTemplateColumns: `80px ${subsetSidesSum}fr ${thisLevelSide}fr`,
         gridTemplateRows: `80px ${subsetSidesSum}fr ${thisLevelSide}fr`,
         minHeight: `${Math.max(160, (subsetSidesSum + thisLevelSide) * 25)}px`,
-        aspectRatio: "1 / 1"
+        aspectRatio: "1 / 1",
       }}
     >
       <div className="col-span-2 row-span-2">
-        <EditorBoardGrid 
-          level={subLevel} 
-          levelState={subLevelState} 
+        <EditorBoardGrid
+          level={subLevel}
+          levelState={subLevelState}
           editMode={editMode}
           selectedValue={selectedValue}
           onCellClick={onCellClick}
@@ -102,31 +119,31 @@ export default function EditorBoardGrid({ level, levelState, editMode, selectedV
 
       <EditorBoardCell
         id={solutionsLength - 5}
-        value={levelState.cellValues[solutionsLength - 5]}
+        value={level.solutions[solutionsLength - 5]}
         isGiven={level.given.includes(solutionsLength - 5)}
         onCellClick={onCellClick}
       />
       <EditorBoardCell
         id={solutionsLength - 4}
-        value={levelState.cellValues[solutionsLength - 4]}
+        value={level.solutions[solutionsLength - 4]}
         isGiven={level.given.includes(solutionsLength - 4)}
         onCellClick={onCellClick}
       />
       <EditorBoardCell
         id={solutionsLength - 1}
-        value={levelState.cellValues[solutionsLength - 1]}
+        value={level.solutions[solutionsLength - 1]}
         isGiven={level.given.includes(solutionsLength - 1)}
         onCellClick={onCellClick}
       />
       <EditorBoardCell
         id={solutionsLength - 2}
-        value={levelState.cellValues[solutionsLength - 2]}
+        value={level.solutions[solutionsLength - 2]}
         isGiven={level.given.includes(solutionsLength - 2)}
         onCellClick={onCellClick}
       />
       <EditorBoardCell
         id={solutionsLength - 3}
-        value={levelState.cellValues[solutionsLength - 3]}
+        value={level.solutions[solutionsLength - 3]}
         isGiven={level.given.includes(solutionsLength - 3)}
         onCellClick={onCellClick}
       />

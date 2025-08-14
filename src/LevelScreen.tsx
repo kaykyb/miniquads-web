@@ -2,7 +2,8 @@ import { useEffect, useMemo, useReducer, useState } from "react";
 import type { Level } from "./models/level";
 import {
   buildInitialState,
-  first4UnusedCards,
+  getFirst4AvailableCards,
+  getEffectiveCards,
   levelStateReducer,
 } from "./logic/levelState";
 import BoardGrid from "./components/BoardGrid";
@@ -16,7 +17,7 @@ interface Props {
 function LevelScreen({ level, onLevelComplete }: Props) {
   const initialState = useMemo(() => buildInitialState(level), [level]);
   const [state, dispatch] = useReducer(levelStateReducer, initialState);
-  const cards = first4UnusedCards(state);
+  const cards = getFirst4AvailableCards(level, state);
 
   const [hintTick, setHintTick] = useState(0);
 
@@ -41,20 +42,31 @@ function LevelScreen({ level, onLevelComplete }: Props) {
   useEffect(() => {
     if (levelCompleted) return;
 
-    const solved = state.cellValues.every(
-      (value, idx) => value !== 0 && value === level.solutions[idx]
-    );
+    const effectiveCards = getEffectiveCards(level);
+    const solved = state.cellAssignments.every((cardId, idx) => {
+      if (cardId === -1) return false; // Cell not filled
+      const cellValue = effectiveCards[cardId];
+      return cellValue === level.solutions[idx];
+    });
 
     if (solved) {
       setLevelCompleted(true);
       onLevelComplete?.();
     }
-  }, [state.cellValues, level.solutions, levelCompleted, onLevelComplete]);
+  }, [
+    state.cellAssignments,
+    level.solutions,
+    level.given,
+    level.cards,
+    levelCompleted,
+    onLevelComplete,
+    level,
+  ]);
 
-  const DESIGN_WIDTH = 760; // px, matches .grass-block width
-  const DESIGN_HEIGHT = 900; // px, board (670) + card fan area (~230)
-  const PADDING_X = 32; // min side padding in px
-  const PADDING_Y = 96; // min top/bottom padding in px
+  const DESIGN_WIDTH = 760;
+  const DESIGN_HEIGHT = 900;
+  const PADDING_X = 32;
+  const PADDING_Y = 96;
 
   const [scale, setScale] = useState(1);
 
@@ -111,11 +123,11 @@ function LevelScreen({ level, onLevelComplete }: Props) {
     };
   }, []);
 
-  const assignCell = (id: number, value: number) => {
+  const assignCell = (cellId: number, cardId: number) => {
     dispatch({
       type: "assignCell",
-      id,
-      value,
+      cellId,
+      cardId,
     });
   };
 
@@ -124,12 +136,11 @@ function LevelScreen({ level, onLevelComplete }: Props) {
     value: number;
     dropCellId: number | null;
   }) => {
-    const { cardId, value, dropCellId } = params;
+    const { cardId, dropCellId } = params;
     if (dropCellId == null) return;
-    if (state.cellValues[dropCellId] !== 0) return;
+    if (state.cellAssignments[dropCellId] !== -1) return; // Cell already has a card
 
-    assignCell(dropCellId, value);
-    dispatch({ type: "useCard", cardId });
+    assignCell(dropCellId, cardId);
   };
 
   const onDragCellCard = (params: {
@@ -137,29 +148,25 @@ function LevelScreen({ level, onLevelComplete }: Props) {
     value: number;
     dropCellId: number | null;
   }) => {
-    const { fromCellId, value, dropCellId } = params;
+    const { fromCellId, dropCellId } = params;
+    const cardId = state.cellAssignments[fromCellId];
 
-    assignCell(fromCellId, 0);
+    // Clear the source cell
+    assignCell(fromCellId, -1);
 
     if (dropCellId == null) {
-      dispatch({ type: "returnCard", cardValue: value });
+      // Card was dropped outside - it returns to available cards (already cleared from cell)
       return;
     }
 
-    if (dropCellId === fromCellId) {
-      // Dropped back onto the same cell – restore value
-      assignCell(fromCellId, value);
+    if (state.cellAssignments[dropCellId] !== -1) {
+      // Target already filled – ignore and restore original card to source cell
+      assignCell(fromCellId, cardId);
       return;
     }
 
-    if (state.cellValues[dropCellId] !== 0) {
-      // Target already filled – ignore and restore original value
-      assignCell(fromCellId, value);
-      return;
-    }
-
-    // Move value to new cell
-    assignCell(dropCellId, value);
+    // Move card to new cell
+    assignCell(dropCellId, cardId);
   };
 
   return (

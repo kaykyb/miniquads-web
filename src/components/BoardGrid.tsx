@@ -1,4 +1,4 @@
-import { levelStateSubset, levelSubset } from "../logic/levelState";
+import { levelStateSubset, levelSubset, getCellValue } from "../logic/levelState";
 import type { Level } from "../models/level";
 import type { LevelState } from "../models/levelState";
 import BoardCell from "./BoardCell";
@@ -25,7 +25,7 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
         <div></div>
         <BoardCell
           id={solutionsLength - 3}
-          value={levelState.cellValues[solutionsLength - 3]}
+          value={getCellValue(level, levelState, solutionsLength - 3)}
           solution={level.solutions[solutionsLength - 3]}
           hintTick={hintTick}
           onDragOutCard={onCellDrag}
@@ -33,7 +33,7 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
         />
         <BoardCell
           id={solutionsLength - 1}
-          value={levelState.cellValues[solutionsLength - 1]}
+          value={getCellValue(level, levelState, solutionsLength - 1)}
           solution={level.solutions[solutionsLength - 1]}
           hintTick={hintTick}
           onDragOutCard={onCellDrag}
@@ -41,7 +41,7 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
         />
         <BoardCell
           id={solutionsLength - 2}
-          value={levelState.cellValues[solutionsLength - 2]}
+          value={getCellValue(level, levelState, solutionsLength - 2)}
           solution={level.solutions[solutionsLength - 2]}
           hintTick={hintTick}
           onDragOutCard={onCellDrag}
@@ -68,7 +68,7 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
 
       <BoardCell
         id={solutionsLength - 5}
-        value={levelState.cellValues[solutionsLength - 5]}
+        value={getCellValue(level, levelState, solutionsLength - 5)}
         solution={level.solutions[solutionsLength - 5]}
         hintTick={hintTick}
         onDragOutCard={onCellDrag}
@@ -76,7 +76,7 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
       />
       <BoardCell
         id={solutionsLength - 4}
-        value={levelState.cellValues[solutionsLength - 4]}
+        value={getCellValue(level, levelState, solutionsLength - 4)}
         solution={level.solutions[solutionsLength - 4]}
         hintTick={hintTick}
         onDragOutCard={onCellDrag}
@@ -84,7 +84,7 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
       />
       <BoardCell
         id={solutionsLength - 1}
-        value={levelState.cellValues[solutionsLength - 1]}
+        value={getCellValue(level, levelState, solutionsLength - 1)}
         solution={level.solutions[solutionsLength - 1]}
         hintTick={hintTick}
         onDragOutCard={onCellDrag}
@@ -92,7 +92,7 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
       />
       <BoardCell
         id={solutionsLength - 2}
-        value={levelState.cellValues[solutionsLength - 2]}
+        value={getCellValue(level, levelState, solutionsLength - 2)}
         solution={level.solutions[solutionsLength - 2]}
         hintTick={hintTick}
         onDragOutCard={onCellDrag}
@@ -100,7 +100,7 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
       />
       <BoardCell
         id={solutionsLength - 3}
-        value={levelState.cellValues[solutionsLength - 3]}
+        value={getCellValue(level, levelState, solutionsLength - 3)}
         solution={level.solutions[solutionsLength - 3]}
         hintTick={hintTick}
         onDragOutCard={onCellDrag}

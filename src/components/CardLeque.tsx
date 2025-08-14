@@ -1,8 +1,7 @@
-import type { Card } from "../models/levelState";
 import DraggableCard from "./DraggableCard";
 
 interface Props {
-  cards: Card[];
+  cards: { id: number; value: number }[];
   onDropCard: (params: {
     cardId: number;
     value: number;
