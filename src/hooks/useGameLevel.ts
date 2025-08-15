@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useCallback, useMemo } from "react";
+import { useEffect, useReducer, useCallback, useMemo, useState } from "react";
 import type { Level } from "../models/level";
 import {
   buildInitialState,
@@ -10,13 +10,15 @@ import {
 interface UseGameLevelProps {
   level: Level;
   onLevelComplete?: () => void;
+  onGameOver?: () => void;
 }
 
-export function useGameLevel({ level, onLevelComplete }: UseGameLevelProps) {
+export function useGameLevel({ level, onLevelComplete, onGameOver }: UseGameLevelProps) {
   const [state, dispatch] = useReducer(
     levelStateReducer,
     buildInitialState(level)
   );
+  const [lives, setLives] = useState(2);
 
   const effectiveCards = useMemo(() => getEffectiveCards(level), [level]);
   const cards = getFirst4AvailableCards(level, state);
@@ -35,6 +37,10 @@ export function useGameLevel({ level, onLevelComplete }: UseGameLevelProps) {
     if (isLevelCompleted) onLevelComplete?.();
   }, [isLevelCompleted, onLevelComplete]);
 
+  useEffect(() => {
+    if (lives <= 0) onGameOver?.();
+  }, [lives, onGameOver]);
+
   const assignCell = useCallback((cellId: number, cardId: number) => {
     dispatch({
       type: "assignCell",
@@ -45,13 +51,19 @@ export function useGameLevel({ level, onLevelComplete }: UseGameLevelProps) {
 
   const onDropCard = useCallback(
     (params: { cardId: number; value: number; dropCellId: number | null }) => {
-      const { cardId, dropCellId } = params;
+      const { cardId, value, dropCellId } = params;
       if (dropCellId == null) return;
       if (state.cellAssignments[dropCellId] !== -1) return; // Cell already has a card
 
       assignCell(dropCellId, cardId);
+
+      // Check if the drop is wrong and reduce lives
+      const expectedValue = level.solutions[dropCellId];
+      if (value !== expectedValue) {
+        setLives(prev => prev - 1);
+      }
     },
-    [state.cellAssignments, assignCell]
+    [state.cellAssignments, assignCell, level.solutions]
   );
 
   // Handle dragging cards between cells
@@ -61,7 +73,7 @@ export function useGameLevel({ level, onLevelComplete }: UseGameLevelProps) {
       value: number;
       dropCellId: number | null;
     }) => {
-      const { fromCellId, dropCellId } = params;
+      const { fromCellId, value, dropCellId } = params;
       const cardId = state.cellAssignments[fromCellId];
 
       // Clear the source cell
@@ -80,14 +92,21 @@ export function useGameLevel({ level, onLevelComplete }: UseGameLevelProps) {
 
       // Move card to new cell
       assignCell(dropCellId, cardId);
+
+      // Check if the drop is wrong and reduce lives
+      const expectedValue = level.solutions[dropCellId];
+      if (value !== expectedValue) {
+        setLives(prev => prev - 1);
+      }
     },
-    [state.cellAssignments, assignCell]
+    [state.cellAssignments, assignCell, level.solutions]
   );
 
   return {
     state,
     cards,
     isLevelCompleted,
+    lives,
     assignCell,
     onDropCard,
     onDragCellCard,

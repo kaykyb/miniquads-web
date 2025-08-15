@@ -8,12 +8,14 @@ import { useMemo } from "react";
 interface Props {
   level: Level;
   onLevelComplete?: () => void;
+  onGameOver?: () => void;
 }
 
-function LevelScreen({ level, onLevelComplete }: Props) {
-  const { state, cards, onDropCard, onDragCellCard } = useGameLevel({
+function LevelScreen({ level, onLevelComplete, onGameOver }: Props) {
+  const { state, cards, lives, onDropCard, onDragCellCard } = useGameLevel({
     level,
     onLevelComplete,
+    onGameOver,
   });
 
   const hintTick = useHintSystem({ availableCardsCount: cards.length });
@@ -22,6 +24,22 @@ function LevelScreen({ level, onLevelComplete }: Props) {
 
   return (
     <div className="h-full w-full flex items-center justify-center px-8 py-24 box-border">
+      <div className="absolute top-4 right-4 z-50 flex items-center gap-2">
+        <span className="text-2xl font-bold text-white">Vidas:</span>
+        <div className="flex gap-1">
+          {Array.from({ length: 2 }, (_, i) => (
+            <div
+              key={i}
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-lg ${
+                i < lives ? "bg-red-500 text-white" : "bg-gray-600 text-gray-400"
+              }`}
+            >
+              ❤️
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div
         className="relative"
         style={{

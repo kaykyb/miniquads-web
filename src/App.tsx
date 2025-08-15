@@ -3,6 +3,7 @@ import MenuScreen from "./MenuScreen";
 import LevelSelectorScreen from "./LevelSelectorScreen";
 import LevelScreen from "./LevelScreen";
 import LevelCompleteScreen from "./LevelCompleteScreen";
+import YouLostScreen from "./YouLostScreen";
 import LevelEditor from "./LevelEditor";
 import { loadLevels, type LevelWithName } from "./levels/loader";
 import {
@@ -19,6 +20,7 @@ type Screens =
   | "levelSelector"
   | "level"
   | "levelComplete"
+  | "youLost"
   | "levelEditor";
 
 function App() {
@@ -97,6 +99,14 @@ function App() {
     }
   };
 
+  const handleGameOver = () => {
+    setScreen("youLost");
+  };
+
+  const handleRestartLevel = () => {
+    setScreen("level");
+  };
+
   return (
     <div className="fixed inset-0 scheme-dark text-white flex overflow-hidden">
       {screen === "menu" && (
@@ -121,6 +131,7 @@ function App() {
           key={levelIndex}
           level={levelsWithNames[levelIndex].level}
           onLevelComplete={handleLevelComplete}
+          onGameOver={handleGameOver}
         />
       )}
 
@@ -129,6 +140,10 @@ function App() {
           isLastLevel={levelIndex + 1 >= levelsWithNames.length}
           onContinue={handleContinueFromWin}
         />
+      )}
+
+      {screen === "youLost" && (
+        <YouLostScreen onRestart={handleRestartLevel} onBackToMenu={backToMenu} />
       )}
 
       {screen === "levelEditor" && <LevelEditor onBack={backToMenu} />}
