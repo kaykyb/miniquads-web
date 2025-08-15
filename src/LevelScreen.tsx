@@ -3,6 +3,7 @@ import BoardGrid from "./components/BoardGrid";
 import CardLeque from "./components/CardLeque";
 import { DESIGN_HEIGHT, DESIGN_WIDTH, useScale } from "./hooks/useScale";
 import { useGameLevel, useHintSystem } from "./hooks";
+import { useMemo } from "react";
 
 interface Props {
   level: Level;
@@ -17,9 +18,10 @@ function LevelScreen({ level, onLevelComplete }: Props) {
 
   const hintTick = useHintSystem({ availableCardsCount: cards.length });
   const scale = useScale();
+  const maxCardValue = useMemo(() => Math.max(...level.solutions), [level]);
 
   return (
-    <div className="h-full w-full flex items-center justify-center bg-blue-400 px-8 py-24 box-border">
+    <div className="h-full w-full flex items-center justify-center px-8 py-24 box-border">
       <div
         className="relative"
         style={{
@@ -36,6 +38,7 @@ function LevelScreen({ level, onLevelComplete }: Props) {
               levelState={state}
               hintTick={hintTick}
               onCellDrag={onDragCellCard}
+              maxCardValue={maxCardValue}
             />
           </div>
         </div>

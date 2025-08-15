@@ -6,7 +6,7 @@ body {
   font-family: "Londrina Solid", cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #51a2ff; /* matches bg-blue-400 */
+  background: #005489;
   min-height: 100dvh;
 }
 
@@ -102,4 +102,19 @@ body,
 
 .animate-shake {
   animation: shake 0.45s ease-in-out;
+}
+
+@keyframes house {
+  0% {
+    transform: translate(0, -16px);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.animate-house {
+  animation: house 0.25s cubic-bezier(0.08, 0.62, 0.39, 1.61);
 }

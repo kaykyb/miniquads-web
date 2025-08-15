@@ -17,6 +17,7 @@ interface Props {
     dropCellId: number | null;
   }) => void;
   housesSize?: number;
+  maxCardValue: number;
 }
 
 export default function BoardGrid({
@@ -25,6 +26,7 @@ export default function BoardGrid({
   hintTick,
   onCellDrag,
   housesSize,
+  maxCardValue,
 }: Props) {
   const lengthsLength = level.sides.length;
   const solutionsLength = level.solutions.length;
@@ -58,6 +60,7 @@ export default function BoardGrid({
           height={1}
           width={thisLevelSide}
           housesSize={calcHousesSize}
+          maxCardValue={maxCardValue}
         />
         <BoardCell
           id={solutionsLength - 1}
@@ -69,6 +72,7 @@ export default function BoardGrid({
           width={1}
           height={thisLevelSide}
           housesSize={calcHousesSize}
+          maxCardValue={maxCardValue}
         />
         <BoardCell
           id={solutionsLength - 2}
@@ -80,6 +84,7 @@ export default function BoardGrid({
           height={thisLevelSide}
           width={thisLevelSide}
           housesSize={calcHousesSize}
+          maxCardValue={maxCardValue}
         />
       </div>
     );
@@ -102,6 +107,7 @@ export default function BoardGrid({
           hintTick={hintTick}
           onCellDrag={onCellDrag}
           housesSize={calcHousesSize}
+          maxCardValue={maxCardValue}
         ></BoardGrid>
       </div>
 
@@ -115,6 +121,7 @@ export default function BoardGrid({
         height={1}
         width={thisLevelSide}
         housesSize={calcHousesSize}
+        maxCardValue={maxCardValue}
       />
       <BoardCell
         id={solutionsLength - 4}
@@ -126,6 +133,7 @@ export default function BoardGrid({
         height={subsetSidesSum}
         width={thisLevelSide}
         housesSize={calcHousesSize}
+        maxCardValue={maxCardValue}
       />
       <BoardCell
         id={solutionsLength - 1}
@@ -137,6 +145,7 @@ export default function BoardGrid({
         height={thisLevelSide}
         width={1}
         housesSize={calcHousesSize}
+        maxCardValue={maxCardValue}
       />
       <BoardCell
         id={solutionsLength - 2}
@@ -148,6 +157,7 @@ export default function BoardGrid({
         height={thisLevelSide}
         width={subsetSidesSum}
         housesSize={calcHousesSize}
+        maxCardValue={maxCardValue}
       />
       <BoardCell
         id={solutionsLength - 3}
@@ -159,6 +169,7 @@ export default function BoardGrid({
         height={thisLevelSide}
         width={thisLevelSide}
         housesSize={calcHousesSize}
+        maxCardValue={maxCardValue}
       />
     </div>
   );

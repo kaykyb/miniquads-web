@@ -15,6 +15,7 @@ interface Props {
   width: number;
   height: number;
   housesSize: number;
+  maxCardValue: number;
 }
 
 export default function BoardCell({
@@ -27,6 +28,7 @@ export default function BoardCell({
   width,
   height,
   housesSize,
+  maxCardValue,
 }: Props) {
   const solved = value !== 0;
   const wrong = solved && value !== solution;
@@ -52,9 +54,10 @@ export default function BoardCell({
 
   // if the cell is not solved, it should be traced with a dashed border
   const borderStyle = solved
-    ? "bg-lime-700 border-b-4 border-lime-800"
+    ? "bg-lime-700 border-t-4 border-l border-r border-lime-800"
     : "border-4 border-gray-200 border-dashed bg-transparent";
   const textStyle = solved ? "text-black" : "text-white";
+  const hueRotateDeg = solved ? (value * 360) / maxCardValue : 0;
 
   return (
     <>
@@ -70,15 +73,16 @@ export default function BoardCell({
         style={{
           gridTemplateColumns: `repeat(${width}, 1fr)`,
           gridTemplateRows: `repeat(${height}, 1fr)`,
+          filter: `hue-rotate(${hueRotateDeg}deg)`,
+          visibility: dragState.dragging ? "hidden" : "visible",
         }}
-        // style={dragState.dragging ? { visibility: "hidden" } : undefined}
       >
         {solved &&
           Array.from({ length: width * height }, () => (
             <div className="relative h-full w-full transform scale-75">
               <img
                 src={yellowHouse}
-                className="absolute top-1/2 left-1/2 calc right-0 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                className="absolute top-1/2 left-1/2 calc right-0 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none animate-house"
                 style={{
                   width: `${housesSize}px`,
                 }}
