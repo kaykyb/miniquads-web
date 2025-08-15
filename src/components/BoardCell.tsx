@@ -67,7 +67,7 @@ export default function BoardCell({
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUpCancel}
         onPointerLeave={onPointerUpCancel}
-        className={`rounded-2xl grid text-4xl ${borderStyle} transition-transform duration-150 ease-out items-center justify-center relative ${textStyle} ${
+        className={`rounded-2xl grid text-4xl ${borderStyle} transition-transform duration-150 ease-out items-center justify-center relative overflow-visible  ${textStyle} ${
           shake ? "animate-shake" : ""
         } ${solved ? "cursor-grab active:cursor-grabbing" : ""}`}
         style={{
@@ -78,11 +78,12 @@ export default function BoardCell({
         }}
       >
         {solved &&
+          value == solution &&
           Array.from({ length: width * height }, () => (
-            <div className="relative h-full w-full transform scale-75">
+            <div className="relative h-full w-full transform scale-75 overflow-visible">
               <img
                 src={yellowHouse}
-                className="absolute top-1/2 left-1/2 calc right-0 transform -translate-x-1/2 -translate-y-3/4 pointer-events-none "
+                className="absolute top-1/2 left-1/2 calc right-0 transform -translate-x-1/2 -translate-y-3/4 pointer-events-none z-[999] translate-z-10"
                 style={{
                   width: `${housesSize}px`,
                 }}
