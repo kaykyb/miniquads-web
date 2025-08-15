@@ -153,6 +153,15 @@ export function useDragAndDrop<T>({
     [enabled, dragDelay, startDrag]
   );
 
+  const onTouchStart: React.TouchEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      if (!enabled) return;
+      // Prevent Safari from scrolling when touch drag starts
+      e.preventDefault();
+    },
+    [enabled]
+  );
+
   const onPointerUpCancel: React.PointerEventHandler<HTMLDivElement> =
     useCallback(() => {
       if (holdTimeout.current != null) {
@@ -166,5 +175,6 @@ export function useDragAndDrop<T>({
     dragState,
     onPointerDown,
     onPointerUpCancel,
+    onTouchStart,
   };
 }

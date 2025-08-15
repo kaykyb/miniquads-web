@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function DraggableCard({ card, onDropCard }: Props) {
-  const { rootRef, dragState, onPointerDown } = useDragAndDrop({
+  const { rootRef, dragState, onPointerDown, onTouchStart } = useDragAndDrop({
     data: card,
     onDrop: (cardData, dropCellId) => {
       onDropCard({ cardId: cardData.id, value: cardData.value, dropCellId });
@@ -23,6 +23,7 @@ export default function DraggableCard({ card, onDropCard }: Props) {
       <div
         ref={rootRef}
         onPointerDown={onPointerDown}
+        onTouchStart={onTouchStart}
         className="bg-blue-500 h-40 w-32 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none touch-none text-white transition-opacity shadow-2xl cursor-grab active:cursor-grabbing"
         style={dragState.dragging ? { visibility: "hidden" } : undefined}
       >

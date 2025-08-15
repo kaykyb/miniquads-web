@@ -38,7 +38,7 @@ export default function BoardCell({
     shouldShake: wrong,
   });
 
-  const { rootRef, dragState, onPointerDown, onPointerUpCancel } =
+  const { rootRef, dragState, onPointerDown, onPointerUpCancel, onTouchStart } =
     useDragAndDrop({
       data: { fromCellId: id, value },
       onDrop: (data, dropCellId) => {
@@ -67,6 +67,7 @@ export default function BoardCell({
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUpCancel}
         onPointerLeave={onPointerUpCancel}
+        onTouchStart={onTouchStart}
         className={`rounded-2xl grid text-4xl ${borderStyle} transition-transform duration-150 ease-out items-center justify-center relative overflow-visible  ${textStyle} ${
           shake ? "animate-shake" : ""
         } ${solved ? "cursor-grab active:cursor-grabbing" : ""}`}
