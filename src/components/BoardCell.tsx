@@ -82,7 +82,7 @@ export default function BoardCell({
             <div className="relative h-full w-full transform scale-75">
               <img
                 src={yellowHouse}
-                className="absolute top-1/2 left-1/2 calc right-0 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none "
+                className="absolute top-1/2 left-1/2 calc right-0 transform -translate-x-1/2 -translate-y-3/4 pointer-events-none "
                 style={{
                   width: `${housesSize}px`,
                 }}
