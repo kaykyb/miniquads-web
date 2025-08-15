@@ -52,7 +52,7 @@ export default function BoardCell({
 
   // if the cell is not solved, it should be traced with a dashed border
   const borderStyle = solved
-    ? "bg-white border-b-4 border-gray-200"
+    ? "bg-lime-700 border-b-4 border-lime-800"
     : "border-4 border-gray-200 border-dashed bg-transparent";
   const textStyle = solved ? "text-black" : "text-white";
 
@@ -64,7 +64,7 @@ export default function BoardCell({
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUpCancel}
         onPointerLeave={onPointerUpCancel}
-        className={`rounded-xl grid text-4xl ${borderStyle} transition-transform duration-150 ease-out items-center justify-center relative ${textStyle} ${
+        className={`rounded-2xl grid text-4xl ${borderStyle} transition-transform duration-150 ease-out items-center justify-center relative ${textStyle} ${
           shake ? "animate-shake" : ""
         } ${solved ? "cursor-grab active:cursor-grabbing" : ""}`}
         style={{
@@ -87,7 +87,7 @@ export default function BoardCell({
           ))}
 
         {solved ? (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-blue-500/70 p-4 rounded-full text-white">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white/70 w-12 h-12 rounded-full flex justify-center items-center text-lime-800 border-lime-800">
             {value}
           </div>
         ) : (
