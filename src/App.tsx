@@ -5,6 +5,14 @@ import LevelScreen from "./LevelScreen";
 import LevelCompleteScreen from "./LevelCompleteScreen";
 import LevelEditor from "./LevelEditor";
 import { loadLevels, type LevelWithName } from "./levels/loader";
+import { 
+  loadProgress, 
+  saveProgress, 
+  markLevelCompleted, 
+  updateLastPlayedLevel,
+  resetProgress,
+  type GameProgress 
+} from "./utils/progress";
 
 type Screens = "menu" | "levelSelector" | "level" | "levelComplete" | "levelEditor";
 
@@ -12,11 +20,17 @@ function App() {
   const [screen, setScreen] = useState<Screens>("menu");
   const [levelIndex, setLevelIndex] = useState(0);
   const [levelsWithNames, setLevelsWithNames] = useState<LevelWithName[] | null>(null);
+  const [progress, setProgress] = useState<GameProgress | null>(null);
 
   // Load levels once on mount
   useEffect(() => {
     loadLevels()
-      .then(setLevelsWithNames)
+      .then((levels) => {
+        setLevelsWithNames(levels);
+        // Load progress after levels are loaded
+        const gameProgress = loadProgress(levels.length);
+        setProgress(gameProgress);
+      })
       .catch((err) => console.error("Error loading levels:", err));
   }, []);
 
@@ -25,6 +39,13 @@ function App() {
   };
 
   const selectLevel = (index: number) => {
+    if (!progress) return;
+    
+    // Update last played level and save progress
+    const updatedProgress = updateLastPlayedLevel(progress, index);
+    setProgress(updatedProgress);
+    saveProgress(updatedProgress);
+    
     setLevelIndex(index);
     setScreen("level");
   };
@@ -37,7 +58,21 @@ function App() {
     setScreen("menu");
   };
 
+  const handleResetProgress = () => {
+    if (!levelsWithNames) return;
+    
+    const newProgress = resetProgress(levelsWithNames.length);
+    setProgress(newProgress);
+  };
+
   const handleLevelComplete = () => {
+    if (!progress) return;
+    
+    // Mark level as completed and save progress
+    const updatedProgress = markLevelCompleted(progress, levelIndex);
+    setProgress(updatedProgress);
+    saveProgress(updatedProgress);
+    
     setScreen("levelComplete");
   };
 
@@ -57,11 +92,12 @@ function App() {
 
   return (
     <div className="fixed inset-0 bg-blue-400 scheme-dark text-white flex overflow-hidden">
-      {screen === "menu" && <MenuScreen onPlayClick={openLevelSelector} onLevelEditorClick={openLevelEditor} />}
+      {screen === "menu" && <MenuScreen onPlayClick={openLevelSelector} onLevelEditorClick={openLevelEditor} onResetProgress={handleResetProgress} />}
 
-      {screen === "levelSelector" && levelsWithNames && (
+      {screen === "levelSelector" && levelsWithNames && progress && (
         <LevelSelectorScreen
           levelNames={levelsWithNames.map(lwn => lwn.name)}
+          progress={progress}
           onLevelSelect={selectLevel}
           onBack={backToMenu}
         />
