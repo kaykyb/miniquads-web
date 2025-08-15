@@ -1,179 +1,33 @@
-import { useState, useCallback, useEffect } from "react";
-import type { Level } from "./models/level";
-import type { LevelState } from "./models/levelState";
-import { buildInitialState } from "./logic/levelState";
 import EditorBoardGrid from "./components/EditorBoardGrid";
 import { demoLevel } from "./levels/demo";
+import { useLevelEditor } from "./hooks";
 
 export default function LevelEditor({ onBack }: { onBack: () => void }) {
-  const [sides, setSides] = useState<number[]>([2, 3]);
-  const [cards, setCards] = useState<number[]>([2, 3, 4, 5, 6, 9, 25]);
-  const [selectedValue, setSelectedValue] = useState<number>(1);
-  const [editMode, setEditMode] = useState<"place" | "given">("place");
-
-  // Calculate total cells needed based on sides (matching BoardGrid logic)
-  const calculateTotalCells = (sidesArray: number[]): number => {
-    if (sidesArray.length === 0) return 0;
-    if (sidesArray.length === 1) return 3; // Base case: innermost level uses 3 cells
-
-    // Each additional level adds 5 more cells
-    return 3 + (sidesArray.length - 1) * 5;
-  };
-
-  const totalCells = calculateTotalCells(sides);
-
-  // Create a level and level state for the editor
-  const [level, setLevel] = useState<Level>(() => ({
-    sides: sides,
-    given: [],
-    solutions: Array(totalCells).fill(0),
-    cards: cards,
-  }));
-
-  const [levelState, setLevelState] = useState<LevelState>(() =>
-    buildInitialState(level)
-  );
-
-  // Update level and level state when sides or cards change
-  useEffect(() => {
-    // Recompute solutions array length when sides change, but keep existing values where possible
-    const updatedSolutions = Array.from(
-      { length: totalCells },
-      (_, i) => level.solutions[i] || 0
-    );
-    const updatedGiven = level.given.filter((index) => index < totalCells);
-
-    // Update `level` first, preserving other fields
-    const updatedLevel = {
-      ...level,
-      sides,
-      cards,
-      given: updatedGiven,
-      solutions: updatedSolutions,
-    };
-
-    setLevel(updatedLevel);
-
-    // Rebuild the level state from the updated level to ensure consistency
-    setLevelState(buildInitialState(updatedLevel));
-  }, [sides, cards, totalCells]);
-
-  const handleCellClick = useCallback(
-    (cellIndex: number) => {
-      if (editMode === "place") {
-        setLevel((prev) => {
-          const newSolutions = [...prev.solutions];
-          newSolutions[cellIndex] =
-            newSolutions[cellIndex] === selectedValue ? 0 : selectedValue;
-          const updatedLevel = { ...prev, solutions: newSolutions };
-          // Update level state to match the new level
-          setLevelState(buildInitialState(updatedLevel));
-          return updatedLevel;
-        });
-      } else if (editMode === "given") {
-        setLevel((prev) => {
-          const newGiven = prev.given.includes(cellIndex)
-            ? prev.given.filter((id) => id !== cellIndex)
-            : [...prev.given, cellIndex];
-          const updatedLevel = { ...prev, given: newGiven };
-          // Update level state to match the new level
-          setLevelState(buildInitialState(updatedLevel));
-          return updatedLevel;
-        });
-      }
-    },
-    [editMode, selectedValue]
-  );
-
-  const addSide = () => {
-    setSides((prev) => [...prev, 2]);
-  };
-
-  const removeSide = () => {
-    if (sides.length > 1) {
-      setSides((prev) => prev.slice(0, -1));
-    }
-  };
-
-  const updateSide = (index: number, value: number) => {
-    setSides((prev) => {
-      const newSides = [...prev];
-      newSides[index] = Math.max(2, value);
-      return newSides;
-    });
-  };
-
-  const addCard = () => {
-    setCards((prev) => [...prev, 1]);
-  };
-
-  const removeCard = (index: number) => {
-    setCards((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const updateCard = (index: number, value: number) => {
-    setCards((prev) => {
-      const newCards = [...prev];
-      newCards[index] = Math.max(1, value);
-      return newCards;
-    });
-  };
-
-  const exportLevel = () => {
-    const levelJson = JSON.stringify(level, null, 2);
-
-    // Create and download file
-    const blob = new Blob([levelJson], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "level.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
-  const clearLevel = () => {
-    setLevel((prev) => ({
-      ...prev,
-      given: [],
-      solutions: Array(totalCells).fill(0),
-    }));
-    setLevelState((prev) => ({
-      ...prev,
-      cellValues: Array(totalCells).fill(0),
-    }));
-  };
-
-  const loadLevel = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const levelData = JSON.parse(e.target?.result as string) as Level;
-        setSides(levelData.sides);
-        setCards(levelData.cards);
-        setLevel(levelData);
-        setLevelState(buildInitialState(levelData));
-      } catch (error) {
-        alert("Erro ao carregar nível: Formato JSON inválido");
-        console.error(error);
-      }
-    };
-    reader.readAsText(file);
-
-    // Reset the input so the same file can be loaded again
-    event.target.value = "";
-  };
+  const {
+    sides,
+    cards,
+    selectedValue,
+    editMode,
+    totalCells,
+    level,
+    levelState,
+    setSelectedValue,
+    setEditMode,
+    handleCellClick,
+    addSide,
+    removeSide,
+    updateSide,
+    addCard,
+    removeCard,
+    updateCard,
+    exportLevel,
+    clearLevel,
+    loadLevel,
+    loadLevelFromFile,
+  } = useLevelEditor();
 
   const loadDemoLevel = () => {
-    setSides(demoLevel.sides);
-    setCards(demoLevel.cards);
-    setLevel(demoLevel);
-    setLevelState(buildInitialState(demoLevel));
+    loadLevel(demoLevel);
   };
 
   const renderGrid = () => {
@@ -359,7 +213,7 @@ export default function LevelEditor({ onBack }: { onBack: () => void }) {
                   <input
                     type="file"
                     accept=".json"
-                    onChange={loadLevel}
+                    onChange={loadLevelFromFile}
                     className="hidden"
                   />
                 </label>
