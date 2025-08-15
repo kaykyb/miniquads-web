@@ -106,15 +106,15 @@ body,
 
 @keyframes house {
   0% {
-    transform: translate(0, -16px);
+    transform: scale(1.2);
     opacity: 0;
   }
   100% {
-    transform: translate(0, 0) rotate(0deg);
+    transform: scale(1) rotate(0deg);
     opacity: 1;
   }
 }
 
 .animate-house {
-  animation: house 0.25s cubic-bezier(0.08, 0.62, 0.39, 1.61);
+  animation: house 0.45s ease-in-out;
 }
