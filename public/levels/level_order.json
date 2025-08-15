@@ -1,14 +1,13 @@
 {
   "levels": [
-    "level1.json",
-    "level_b.json",
-    "level_g.json",
-    "level2.json",
-    "level_g.json",
-    "level3.json",
-    "level4.json",
-    "level5.json",
-    "level6.json",
-    "level7.json"
+    "Tutorial.json",
+    "1.json",
+    "2.json",
+    "3.json",
+    "4.json",
+    "5.json",
+    "6.json",
+    "7.json",
+    "8.json"
   ]
 }

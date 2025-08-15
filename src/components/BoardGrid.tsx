@@ -61,6 +61,7 @@ export default function BoardGrid({
           width={thisLevelSide}
           housesSize={calcHousesSize}
           maxCardValue={maxCardValue}
+          difficulty={level.difficulty}
         />
         <BoardCell
           id={solutionsLength - 1}
@@ -73,6 +74,7 @@ export default function BoardGrid({
           height={thisLevelSide}
           housesSize={calcHousesSize}
           maxCardValue={maxCardValue}
+          difficulty={level.difficulty}
         />
         <BoardCell
           id={solutionsLength - 2}
@@ -85,6 +87,7 @@ export default function BoardGrid({
           width={thisLevelSide}
           housesSize={calcHousesSize}
           maxCardValue={maxCardValue}
+          difficulty={level.difficulty}
         />
       </div>
     );
@@ -122,6 +125,7 @@ export default function BoardGrid({
         width={thisLevelSide}
         housesSize={calcHousesSize}
         maxCardValue={maxCardValue}
+        difficulty={level.difficulty}
       />
       <BoardCell
         id={solutionsLength - 4}
@@ -134,6 +138,7 @@ export default function BoardGrid({
         width={thisLevelSide}
         housesSize={calcHousesSize}
         maxCardValue={maxCardValue}
+        difficulty={level.difficulty}
       />
       <BoardCell
         id={solutionsLength - 1}
@@ -146,6 +151,7 @@ export default function BoardGrid({
         width={1}
         housesSize={calcHousesSize}
         maxCardValue={maxCardValue}
+        difficulty={level.difficulty}
       />
       <BoardCell
         id={solutionsLength - 2}
@@ -158,6 +164,7 @@ export default function BoardGrid({
         width={subsetSidesSum}
         housesSize={calcHousesSize}
         maxCardValue={maxCardValue}
+        difficulty={level.difficulty}
       />
       <BoardCell
         id={solutionsLength - 3}
@@ -170,6 +177,7 @@ export default function BoardGrid({
         width={thisLevelSide}
         housesSize={calcHousesSize}
         maxCardValue={maxCardValue}
+        difficulty={level.difficulty}
       />
     </div>
   );

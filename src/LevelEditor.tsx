@@ -8,11 +8,13 @@ export default function LevelEditor({ onBack }: { onBack: () => void }) {
     cards,
     selectedValue,
     editMode,
+    difficulty,
     totalCells,
     level,
     levelState,
     setSelectedValue,
     setEditMode,
+    setDifficulty,
     handleCellClick,
     addSide,
     removeSide,
@@ -164,6 +166,43 @@ export default function LevelEditor({ onBack }: { onBack: () => void }) {
                   />
                 </div>
               )}
+            </div>
+
+            {/* Difficulty Level */}
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="text-lg font-semibold mb-3">Dificuldade</h3>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="difficulty"
+                    value="easy"
+                    checked={difficulty === "easy"}
+                    onChange={() => setDifficulty("easy")}
+                  />
+                  <span>Fácil - Todas as células mostram casas</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="difficulty"
+                    value="medium"
+                    checked={difficulty === "medium"}
+                    onChange={() => setDifficulty("medium")}
+                  />
+                  <span>Médio - Apenas células corretas mostram casas</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="difficulty"
+                    value="hard"
+                    checked={difficulty === "hard"}
+                    onChange={() => setDifficulty("hard")}
+                  />
+                  <span>Difícil - Nenhuma célula mostra casas</span>
+                </label>
+              </div>
             </div>
 
             {/* Available Cards */}

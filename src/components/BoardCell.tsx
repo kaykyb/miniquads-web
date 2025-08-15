@@ -1,6 +1,8 @@
 import { createPortal } from "react-dom";
 import { useDragAndDrop, useShakeAnimation } from "../hooks";
 import yellowHouse from "../assets/yellow-house.png";
+import type { Difficulty } from "../models/level";
+
 interface Props {
   id: number;
   value: number;
@@ -16,6 +18,7 @@ interface Props {
   height: number;
   housesSize: number;
   maxCardValue: number;
+  difficulty?: Difficulty;
 }
 
 export default function BoardCell({
@@ -29,9 +32,28 @@ export default function BoardCell({
   height,
   housesSize,
   maxCardValue,
+  difficulty = "medium", // Default to medium for backward compatibility
 }: Props) {
   const solved = value !== 0;
   const wrong = solved && value !== solution;
+
+  console.log(difficulty);
+
+  // Determine if houses should be shown based on difficulty
+  const shouldShowHouses = () => {
+    if (!solved) return false;
+
+    switch (difficulty) {
+      case "easy":
+        return true; // Show houses for all solved cells
+      case "medium":
+        return isGiven; // Show houses only when correct (current behavior)
+      case "hard":
+        return false; // Never show houses
+      default:
+        return value === solution; // Default to medium behavior
+    }
+  };
 
   const shake = useShakeAnimation({
     trigger: hintTick,
@@ -78,10 +100,12 @@ export default function BoardCell({
           visibility: dragState.dragging ? "hidden" : "visible",
         }}
       >
-        {solved &&
-          value == solution &&
-          Array.from({ length: width * height }, () => (
-            <div className="relative h-full w-full transform scale-75 overflow-visible">
+        {shouldShowHouses() &&
+          Array.from({ length: width * height }, (_, index) => (
+            <div
+              key={index}
+              className="relative h-full w-full transform scale-75 overflow-visible"
+            >
               <img
                 src={yellowHouse}
                 className="absolute top-1/2 left-1/2 calc right-0 transform -translate-x-1/2 -translate-y-3/4 pointer-events-none z-[999] translate-z-10"

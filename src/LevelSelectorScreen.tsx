@@ -1,4 +1,8 @@
-import { isLevelUnlocked, isLevelCompleted, type GameProgress } from "./utils/progress";
+import {
+  isLevelUnlocked,
+  isLevelCompleted,
+  type GameProgress,
+} from "./utils/progress";
 
 interface LevelSelectorScreenProps {
   levelNames: string[];
@@ -7,31 +11,37 @@ interface LevelSelectorScreenProps {
   onBack: () => void;
 }
 
-function LevelSelectorScreen({ levelNames, progress, onLevelSelect, onBack }: LevelSelectorScreenProps) {
+function LevelSelectorScreen({
+  levelNames,
+  progress,
+  onLevelSelect,
+  onBack,
+}: LevelSelectorScreenProps) {
   return (
     <div className="h-full w-full flex flex-col justify-center items-center p-8">
       <h1 className="text-4xl mb-8">Selecionar Nível</h1>
-      
+
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 max-w-4xl">
         {levelNames.map((levelName, index) => {
           // Extract the level name from the filename (remove .json extension)
-          const displayName = levelName.replace('.json', '');
+          const displayName = levelName.replace(".json", "");
           const unlocked = isLevelUnlocked(progress, index);
           const completed = isLevelCompleted(progress, index);
           const isLastPlayed = progress.lastPlayedLevel === index;
-          
+
           return (
             <button
               key={index}
               className={`
                 py-3 px-4 border-b-4 rounded-xl text-lg transition-all min-w-[80px] relative
-                ${unlocked 
-                  ? completed 
-                    ? 'bg-green-500 text-white border-green-600 hover:transform hover:scale-105 hover:shadow-xl cursor-pointer' 
-                    : isLastPlayed
-                      ? 'bg-yellow-400 text-blue-900 border-yellow-500 hover:transform hover:scale-105 hover:shadow-xl cursor-pointer'
-                      : 'bg-white text-blue-400 border-gray-200 hover:transform hover:scale-105 hover:shadow-xl cursor-pointer'
-                  : 'bg-gray-400 text-gray-600 border-gray-500 cursor-not-allowed opacity-50'
+                ${
+                  unlocked
+                    ? completed
+                      ? "bg-green-500 text-white border-green-600 hover:transform hover:scale-105 hover:shadow-xl cursor-pointer"
+                      : isLastPlayed
+                      ? "bg-yellow-400 text-blue-900 border-yellow-500 hover:transform hover:scale-105 hover:shadow-xl cursor-pointer"
+                      : "bg-white text-blue-400 border-gray-200 hover:transform hover:scale-105 hover:shadow-xl cursor-pointer"
+                    : "bg-gray-400 text-gray-600 border-gray-500 cursor-not-allowed opacity-50"
                 }
               `}
               onClick={() => unlocked && onLevelSelect(index)}

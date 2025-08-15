@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import type { Level } from "../models/level";
+import type { Level, Difficulty } from "../models/level";
 import type { LevelState } from "../models/levelState";
 import { buildInitialState } from "../logic/levelState";
 
@@ -16,6 +16,7 @@ export function useLevelEditor({
   const [cards, setCards] = useState<number[]>(initialCards);
   const [selectedValue, setSelectedValue] = useState<number>(1);
   const [editMode, setEditMode] = useState<"place" | "given">("place");
+  const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   // Calculate total cells needed based on sides (matching BoardGrid logic)
   const calculateTotalCells = useCallback((sidesArray: number[]): number => {
@@ -33,13 +34,14 @@ export function useLevelEditor({
     given: [],
     solutions: Array(totalCells).fill(0),
     cards: cards,
+    difficulty: difficulty,
   }));
 
   const [levelState, setLevelState] = useState<LevelState>(() =>
     buildInitialState(level)
   );
 
-  // Update level and level state when sides or cards change
+  // Update level and level state when sides, cards, or difficulty change
   useEffect(() => {
     // Recompute solutions array length when sides change, but keep existing values where possible
     const updatedSolutions = Array.from(
@@ -53,6 +55,7 @@ export function useLevelEditor({
       ...level,
       sides,
       cards,
+      difficulty,
       given: updatedGiven,
       solutions: updatedSolutions,
     };
@@ -61,7 +64,7 @@ export function useLevelEditor({
 
     // Rebuild the level state from the updated level to ensure consistency
     setLevelState(buildInitialState(updatedLevel));
-  }, [sides, cards, totalCells]);
+  }, [sides, cards, difficulty, totalCells]);
 
   // Cell click handler
   const handleCellClick = useCallback(
@@ -156,6 +159,7 @@ export function useLevelEditor({
   const loadLevel = useCallback((levelData: Level) => {
     setSides(levelData.sides);
     setCards(levelData.cards);
+    setDifficulty(levelData.difficulty || "medium");
     setLevel(levelData);
     setLevelState(buildInitialState(levelData));
   }, []);
@@ -186,6 +190,7 @@ export function useLevelEditor({
     cards,
     selectedValue,
     editMode,
+    difficulty,
     totalCells,
     level,
     levelState,
@@ -193,6 +198,7 @@ export function useLevelEditor({
     // Setters
     setSelectedValue,
     setEditMode,
+    setDifficulty,
     
     // Handlers
     handleCellClick,

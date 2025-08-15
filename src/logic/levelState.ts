@@ -41,10 +41,9 @@ export const levelSubset = (
   solutionsLength: number
 ): Level => {
   return {
+    ...level,
     sides: level.sides.slice(0, sidesLength),
-    given: level.given,
     solutions: level.solutions.slice(0, solutionsLength),
-    cards: level.cards,
   };
 };
 
