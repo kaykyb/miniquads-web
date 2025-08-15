@@ -1,7 +1,7 @@
 import type { Level } from "./models/level";
 import BoardGrid from "./components/BoardGrid";
 import CardLeque from "./components/CardLeque";
-import { DESIGN_HEIGHT, DESIGN_WIDTH, useScale } from "./logic/interface";
+import { DESIGN_HEIGHT, DESIGN_WIDTH, useScale } from "./hooks/useScale";
 import { useGameLevel, useHintSystem } from "./hooks";
 
 interface Props {
