@@ -1,28 +1,31 @@
 import { useState, useEffect } from "react";
 import MenuScreen from "./MenuScreen";
+import LevelSelectorScreen from "./LevelSelectorScreen";
 import LevelScreen from "./LevelScreen";
 import LevelCompleteScreen from "./LevelCompleteScreen";
 import LevelEditor from "./LevelEditor";
-import type { Level } from "./models/level";
-import { loadLevels } from "./levels/loader";
+import { loadLevels, type LevelWithName } from "./levels/loader";
 
-type Screens = "menu" | "level" | "levelComplete" | "levelEditor";
+type Screens = "menu" | "levelSelector" | "level" | "levelComplete" | "levelEditor";
 
 function App() {
   const [screen, setScreen] = useState<Screens>("menu");
   const [levelIndex, setLevelIndex] = useState(0);
-  const [levels, setLevels] = useState<Level[] | null>(null);
+  const [levelsWithNames, setLevelsWithNames] = useState<LevelWithName[] | null>(null);
 
   // Load levels once on mount
   useEffect(() => {
     loadLevels()
-      .then(setLevels)
+      .then(setLevelsWithNames)
       .catch((err) => console.error("Error loading levels:", err));
   }, []);
 
-  const startGame = () => {
-    if (!levels) return; // Levels not yet loaded
-    setLevelIndex(0);
+  const openLevelSelector = () => {
+    setScreen("levelSelector");
+  };
+
+  const selectLevel = (index: number) => {
+    setLevelIndex(index);
     setScreen("level");
   };
 
@@ -39,12 +42,12 @@ function App() {
   };
 
   const handleContinueFromWin = () => {
-    if (!levels) {
+    if (!levelsWithNames) {
       setScreen("menu");
       return;
     }
 
-    if (levelIndex + 1 < levels.length) {
+    if (levelIndex + 1 < levelsWithNames.length) {
       setLevelIndex((prev) => prev + 1);
       setScreen("level");
     } else {
@@ -54,19 +57,27 @@ function App() {
 
   return (
     <div className="fixed inset-0 bg-blue-400 scheme-dark text-white flex overflow-hidden">
-      {screen === "menu" && <MenuScreen onPlayClick={startGame} onLevelEditorClick={openLevelEditor} />}
+      {screen === "menu" && <MenuScreen onPlayClick={openLevelSelector} onLevelEditorClick={openLevelEditor} />}
 
-      {screen === "level" && levels && (
+      {screen === "levelSelector" && levelsWithNames && (
+        <LevelSelectorScreen
+          levelNames={levelsWithNames.map(lwn => lwn.name)}
+          onLevelSelect={selectLevel}
+          onBack={backToMenu}
+        />
+      )}
+
+      {screen === "level" && levelsWithNames && (
         <LevelScreen
           key={levelIndex}
-          level={levels[levelIndex]}
+          level={levelsWithNames[levelIndex].level}
           onLevelComplete={handleLevelComplete}
         />
       )}
 
-      {screen === "levelComplete" && levels && (
+      {screen === "levelComplete" && levelsWithNames && (
         <LevelCompleteScreen
-          isLastLevel={levelIndex + 1 >= levels.length}
+          isLastLevel={levelIndex + 1 >= levelsWithNames.length}
           onContinue={handleContinueFromWin}
         />
       )}

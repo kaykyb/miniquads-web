@@ -1,8 +1,13 @@
 import type { Level } from "../models/level";
 
+export type LevelWithName = {
+  level: Level;
+  name: string;
+};
+
 // Fetches level metadata and individual level files from the public directory.
-// Returns all levels parsed as Level objects.
-export async function loadLevels(): Promise<Level[]> {
+// Returns all levels parsed as Level objects with their filenames.
+export async function loadLevels(): Promise<LevelWithName[]> {
   // The order file lists level json filenames in order of play.
   const orderRes = await fetch("/levels/level_order.json");
   if (!orderRes.ok) {
@@ -18,7 +23,11 @@ export async function loadLevels(): Promise<Level[]> {
     if (!levelRes.ok) {
       throw new Error(`Failed to fetch level file ${fileName}: ${levelRes.status} ${levelRes.statusText}`);
     }
-    return levelRes.json() as Promise<Level>;
+    const level = await levelRes.json() as Level;
+    return {
+      level,
+      name: fileName
+    };
   });
 
   return Promise.all(levelPromises);
