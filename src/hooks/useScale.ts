@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export const DESIGN_WIDTH = 760;
 export const DESIGN_HEIGHT = 900;
-const PADDING_X = 32;
+const PADDING_X = 16;
 const PADDING_Y = 96;
 
 export const useScale = () => {

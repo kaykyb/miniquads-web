@@ -1,4 +1,8 @@
-import { levelStateSubset, levelSubset, getCellValue } from "../logic/levelState";
+import {
+  levelStateSubset,
+  levelSubset,
+  getCellValue,
+} from "../logic/levelState";
 import type { Level } from "../models/level";
 import type { LevelState } from "../models/levelState";
 import BoardCell from "./BoardCell";
@@ -7,10 +11,21 @@ interface Props {
   level: Level;
   levelState: LevelState;
   hintTick?: number;
-  onCellDrag?: (params: { fromCellId: number; value: number; dropCellId: number | null }) => void;
+  onCellDrag?: (params: {
+    fromCellId: number;
+    value: number;
+    dropCellId: number | null;
+  }) => void;
+  housesSize?: number;
 }
 
-export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: Props) {
+export default function BoardGrid({
+  level,
+  levelState,
+  hintTick,
+  onCellDrag,
+  housesSize,
+}: Props) {
   const lengthsLength = level.sides.length;
   const solutionsLength = level.solutions.length;
 
@@ -18,10 +33,14 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
   const subLevelState = levelStateSubset(levelState, solutionsLength - 5);
 
   const hasSubLevel = subLevel.sides.length > 0;
+  const thisLevelSide = level.sides[lengthsLength - 1];
+
+  const calcHousesSize =
+    housesSize || 380 / level.sides.reduce((acc, val) => acc + val);
 
   if (!hasSubLevel) {
     return (
-      <div className="grid board-grid-small w-full h-full gap-3">
+      <div className="grid board-grid-small w-full h-full gap-1">
         <div></div>
         <BoardCell
           id={solutionsLength - 3}
@@ -30,6 +49,9 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
           hintTick={hintTick}
           onDragOutCard={onCellDrag}
           isGiven={level.given.includes(solutionsLength - 3)}
+          height={1}
+          width={thisLevelSide}
+          housesSize={calcHousesSize}
         />
         <BoardCell
           id={solutionsLength - 1}
@@ -38,6 +60,9 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
           hintTick={hintTick}
           onDragOutCard={onCellDrag}
           isGiven={level.given.includes(solutionsLength - 1)}
+          width={1}
+          height={thisLevelSide}
+          housesSize={calcHousesSize}
         />
         <BoardCell
           id={solutionsLength - 2}
@@ -46,24 +71,32 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
           hintTick={hintTick}
           onDragOutCard={onCellDrag}
           isGiven={level.given.includes(solutionsLength - 2)}
+          height={thisLevelSide}
+          width={thisLevelSide}
+          housesSize={calcHousesSize}
         />
       </div>
     );
   }
 
   const subsetSidesSum = subLevel.sides.reduce((a, b) => a + b, 0);
-  const thisLevelSide = level.sides[lengthsLength - 1];
 
   return (
     <div
-      className="grid board-grid w-full h-full gap-3"
+      className="grid board-grid w-full h-full gap-1"
       style={{
         gridTemplateColumns: `80px ${subsetSidesSum}fr ${thisLevelSide}fr`,
         gridTemplateRows: `80px ${subsetSidesSum}fr ${thisLevelSide}fr`,
       }}
     >
       <div className="col-span-2 row-span-2">
-        <BoardGrid level={subLevel} levelState={subLevelState} hintTick={hintTick} onCellDrag={onCellDrag}></BoardGrid>
+        <BoardGrid
+          level={subLevel}
+          levelState={subLevelState}
+          hintTick={hintTick}
+          onCellDrag={onCellDrag}
+          housesSize={calcHousesSize}
+        ></BoardGrid>
       </div>
 
       <BoardCell
@@ -73,6 +106,9 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
         hintTick={hintTick}
         onDragOutCard={onCellDrag}
         isGiven={level.given.includes(solutionsLength - 5)}
+        height={1}
+        width={thisLevelSide}
+        housesSize={calcHousesSize}
       />
       <BoardCell
         id={solutionsLength - 4}
@@ -81,6 +117,9 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
         hintTick={hintTick}
         onDragOutCard={onCellDrag}
         isGiven={level.given.includes(solutionsLength - 4)}
+        height={subsetSidesSum}
+        width={thisLevelSide}
+        housesSize={calcHousesSize}
       />
       <BoardCell
         id={solutionsLength - 1}
@@ -89,6 +128,9 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
         hintTick={hintTick}
         onDragOutCard={onCellDrag}
         isGiven={level.given.includes(solutionsLength - 1)}
+        height={thisLevelSide}
+        width={1}
+        housesSize={calcHousesSize}
       />
       <BoardCell
         id={solutionsLength - 2}
@@ -97,6 +139,9 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
         hintTick={hintTick}
         onDragOutCard={onCellDrag}
         isGiven={level.given.includes(solutionsLength - 2)}
+        height={thisLevelSide}
+        width={subsetSidesSum}
+        housesSize={calcHousesSize}
       />
       <BoardCell
         id={solutionsLength - 3}
@@ -105,6 +150,9 @@ export default function BoardGrid({ level, levelState, hintTick, onCellDrag }: P
         hintTick={hintTick}
         onDragOutCard={onCellDrag}
         isGiven={level.given.includes(solutionsLength - 3)}
+        height={thisLevelSide}
+        width={thisLevelSide}
+        housesSize={calcHousesSize}
       />
     </div>
   );

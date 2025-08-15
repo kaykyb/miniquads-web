@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import { useDragAndDrop, useShakeAnimation } from "../hooks";
-
+import yellowHouse from "../assets/yellow-house.png";
 interface Props {
   id: number;
   value: number;
@@ -12,6 +12,9 @@ interface Props {
     dropCellId: number | null;
   }) => void;
   isGiven?: boolean;
+  width: number;
+  height: number;
+  housesSize: number;
 }
 
 export default function BoardCell({
@@ -21,6 +24,9 @@ export default function BoardCell({
   hintTick,
   onDragOutCard,
   isGiven = false,
+  width,
+  height,
+  housesSize,
 }: Props) {
   const solved = value !== 0;
   const wrong = solved && value !== solution;
@@ -46,7 +52,7 @@ export default function BoardCell({
 
   // if the cell is not solved, it should be traced with a dashed border
   const borderStyle = solved
-    ? "border-b-4 border-gray-200 bg-white "
+    ? "bg-white border-b-4 border-gray-200"
     : "border-4 border-gray-200 border-dashed bg-transparent";
   const textStyle = solved ? "text-black" : "text-white";
 
@@ -58,12 +64,37 @@ export default function BoardCell({
         onPointerDown={onPointerDown}
         onPointerUp={onPointerUpCancel}
         onPointerLeave={onPointerUpCancel}
-        className={`rounded-3xl flex items-center justify-center text-4xl ${borderStyle} transition-transform duration-150 ease-out ${textStyle} ${
+        className={`rounded-xl grid text-4xl ${borderStyle} transition-transform duration-150 ease-out items-center justify-center relative ${textStyle} ${
           shake ? "animate-shake" : ""
         } ${solved ? "cursor-grab active:cursor-grabbing" : ""}`}
-        style={dragState.dragging ? { visibility: "hidden" } : undefined}
+        style={{
+          gridTemplateColumns: `repeat(${width}, 1fr)`,
+          gridTemplateRows: `repeat(${height}, 1fr)`,
+        }}
+        // style={dragState.dragging ? { visibility: "hidden" } : undefined}
       >
-        {solved ? value : "?"}
+        {solved &&
+          Array.from({ length: width * height }, () => (
+            <div className="relative h-full w-full transform scale-75">
+              <img
+                src={yellowHouse}
+                className="absolute top-1/2 left-1/2 calc right-0 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                style={{
+                  width: `${housesSize}px`,
+                }}
+              />
+            </div>
+          ))}
+
+        {solved ? (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-blue-500/70 p-4 rounded-full text-white">
+            {value}
+          </div>
+        ) : (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50  p-4 rounded-full text-white">
+            ?
+          </div>
+        )}
       </div>
 
       {dragState.dragging &&

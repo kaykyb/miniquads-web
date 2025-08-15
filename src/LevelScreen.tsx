@@ -30,7 +30,7 @@ function LevelScreen({ level, onLevelComplete }: Props) {
         }}
       >
         <div className="grass-block relative">
-          <div className="tilted-board -top-10 -left-4 bottom-36 right-18 absolute">
+          <div className="tilted-board left-28 right-28 top-4 absolute aspect-square">
             <BoardGrid
               level={level}
               levelState={state}
