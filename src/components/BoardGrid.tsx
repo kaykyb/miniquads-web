@@ -40,7 +40,13 @@ export default function BoardGrid({
 
   if (!hasSubLevel) {
     return (
-      <div className="grid board-grid-small w-full h-full gap-1">
+      <div
+        className="grid board-grid-small w-full h-full gap-1"
+        style={{
+          gridTemplateColumns: `1fr ${thisLevelSide}fr`,
+          gridTemplateRows: `1fr ${thisLevelSide}fr`,
+        }}
+      >
         <div></div>
         <BoardCell
           id={solutionsLength - 3}
@@ -85,8 +91,8 @@ export default function BoardGrid({
     <div
       className="grid board-grid w-full h-full gap-1"
       style={{
-        gridTemplateColumns: `80px ${subsetSidesSum}fr ${thisLevelSide}fr`,
-        gridTemplateRows: `80px ${subsetSidesSum}fr ${thisLevelSide}fr`,
+        gridTemplateColumns: `1fr ${subsetSidesSum}fr ${thisLevelSide}fr`,
+        gridTemplateRows: `1fr ${subsetSidesSum}fr ${thisLevelSide}fr`,
       }}
     >
       <div className="col-span-2 row-span-2">
