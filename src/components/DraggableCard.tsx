@@ -36,8 +36,14 @@ export default function DraggableCard({ card, onDropCard }: Props) {
             className="bg-blue-500 h-40 w-32 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none text-white opacity-50 transition-opacity shadow-2xl"
             style={{
               position: "fixed",
-              left: `${dragState.pointerPos.x - (dragState.pointerOffset?.x ?? 0)}px`,
-              top: `${dragState.pointerPos.y - (dragState.pointerOffset?.y ?? 0)}px`,
+              left: `${
+                dragState.pointerPos.x - (dragState.pointerOffset?.x ?? 0)
+              }px`,
+              top: `${
+                dragState.pointerPos.y - (dragState.pointerOffset?.y ?? 0)
+              }px`,
+              width: dragState.dragSize?.w,
+              height: dragState.dragSize?.h,
               zIndex: 99999,
               pointerEvents: "none",
             }}
