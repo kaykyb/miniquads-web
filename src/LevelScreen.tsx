@@ -31,7 +31,7 @@ function LevelScreen({ level, onLevelComplete, onGameOver }: Props) {
             <div
               key={i}
               className={`w-8 h-8 rounded-full flex items-center justify-center text-lg ${
-                i < lives ? "0 text-white" : " text-gray-400"
+                i < lives ? "0 text-white" : "opacity-30 text-gray-400"
               }`}
             >
               ❤️
