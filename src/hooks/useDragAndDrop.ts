@@ -31,7 +31,6 @@ export function useDragAndDrop<T>({
     dragSize: null,
   });
 
-  // Cleanup hold timeout on unmount
   useEffect(() => {
     return () => {
       if (holdTimeout.current != null) {
@@ -40,7 +39,6 @@ export function useDragAndDrop<T>({
     };
   }, []);
 
-  // Handle drag events
   useEffect(() => {
     if (!dragState.dragging) return;
 

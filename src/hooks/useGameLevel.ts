@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState, useCallback } from "react";
+import { useEffect, useReducer, useCallback, useMemo } from "react";
 import type { Level } from "../models/level";
 import {
   buildInitialState,
@@ -18,36 +18,23 @@ export function useGameLevel({ level, onLevelComplete }: UseGameLevelProps) {
     buildInitialState(level)
   );
 
-  const [levelCompleted, setLevelCompleted] = useState(false);
-
+  const effectiveCards = useMemo(() => getEffectiveCards(level), [level]);
   const cards = getFirst4AvailableCards(level, state);
 
-  // Check for level completion
+  const isLevelCompleted = useMemo(
+    () =>
+      state.cellAssignments.every((cardId, idx) => {
+        if (cardId === -1) return false; // Cell not filled
+        const cellValue = effectiveCards[cardId];
+        return cellValue === level.solutions[idx];
+      }),
+    [effectiveCards, level, state.cellAssignments]
+  );
+
   useEffect(() => {
-    if (levelCompleted) return;
+    if (isLevelCompleted) onLevelComplete?.();
+  }, [isLevelCompleted, onLevelComplete]);
 
-    const effectiveCards = getEffectiveCards(level);
-    const solved = state.cellAssignments.every((cardId, idx) => {
-      if (cardId === -1) return false; // Cell not filled
-      const cellValue = effectiveCards[cardId];
-      return cellValue === level.solutions[idx];
-    });
-
-    if (solved) {
-      setLevelCompleted(true);
-      onLevelComplete?.();
-    }
-  }, [
-    state.cellAssignments,
-    level.solutions,
-    level.given,
-    level.cards,
-    levelCompleted,
-    onLevelComplete,
-    level,
-  ]);
-
-  // Cell assignment function
   const assignCell = useCallback((cellId: number, cardId: number) => {
     dispatch({
       type: "assignCell",
@@ -56,7 +43,6 @@ export function useGameLevel({ level, onLevelComplete }: UseGameLevelProps) {
     });
   }, []);
 
-  // Handle card drops from the card deck
   const onDropCard = useCallback(
     (params: { cardId: number; value: number; dropCellId: number | null }) => {
       const { cardId, dropCellId } = params;
@@ -101,7 +87,7 @@ export function useGameLevel({ level, onLevelComplete }: UseGameLevelProps) {
   return {
     state,
     cards,
-    levelCompleted,
+    isLevelCompleted,
     assignCell,
     onDropCard,
     onDragCellCard,

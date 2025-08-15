@@ -16,7 +16,6 @@ function LevelScreen({ level, onLevelComplete }: Props) {
   });
 
   const hintTick = useHintSystem({ availableCardsCount: cards.length });
-
   const scale = useScale();
 
   return (
