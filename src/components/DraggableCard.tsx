@@ -25,7 +25,10 @@ export default function DraggableCard({ card, onDropCard }: Props) {
         onPointerDown={onPointerDown}
         onTouchStart={onTouchStart}
         className="bg-blue-500 h-40 w-32 rounded-3xl text-8xl flex items-center justify-center border-b-8 border-blue-950 select-none touch-none text-white transition-opacity shadow-2xl cursor-grab active:cursor-grabbing"
-        style={dragState.dragging ? { visibility: "hidden" } : undefined}
+        style={{
+          ...(dragState.dragging ? { visibility: "hidden" } : undefined),
+          textShadow: '0 2px 0 rgba(255, 255, 255, 0.6), 0 -2px 0 rgba(0, 0, 0, 0.8), 2px 0 0 rgba(0, 0, 0, 0.5), -2px 0 0 rgba(255, 255, 255, 0.4), 1px 1px 3px rgba(0, 0, 0, 0.7)'
+        }}
       >
         {card.value}
       </div>
